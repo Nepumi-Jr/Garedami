@@ -1,13 +1,14 @@
 
 import json
+from typing import DefaultDict
 import yaml
-import os
-import Config
+from os import path
 
-CUR_DIR = os.path.dirname(__file__)
+CUR_DIR = path.dirname(__file__)
+CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config"))
 
 
-STD_FILE = os.path.abspath(os.path.join(CUR_DIR,"..","StandJudge","StdJudge.py"))
+STD_FILE = path.abspath(path.join(CUR_DIR,"..","StandJudge","StdJudge.py"))
 
 
 class LittleCmd:
@@ -44,41 +45,33 @@ class Problem:
 
     """
 
-    
+    timeLimit = 1000
+    memLimit = 256
+    judging = LittleCmd("<<!Python:BIN_FILE>>",f"\"{STD_FILE}\"")
 
-    def reset(self):
-        #Default goes here
-        self.timeLimit = 1000
-        self.memLimit = 256
-
-        self.judging = LittleCmd("<<!Python:BIN_FILE>>",f"\"{STD_FILE}\"")
-
-        self.compiling = {
+    compiling = {
             "C" : LittleCmd("<<!C:BIN_FILE>>","-O2 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""),
             "Cpp" : LittleCmd("<<!Cpp:BIN_FILE>>","-O2 -std=c++17 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""),
             "Python": LittleCmd("<<!Python:BIN_FILE>>","-m py_compile \"<<Cur_Src>>\""),
-            "Java": LittleCmd(os.path.join("<<!Java:BIN_PATH>>","javac"),"\"<<Cur_Src>>\"")
+            "Java": LittleCmd(path.join("<<!Java:BIN_PATH>>","javac"),"\"<<Cur_Src>>\"")
         }
 
-        self.runing = {
+    running = {
             "C" : LittleCmd("\"<<Cur_Bin>>\"",""),
             "Cpp" : LittleCmd("\"<<Cur_Bin>>\"",""),
             "Python": LittleCmd("<<!Python:BIN_FILE>>","\"<<Cur_Src>>\""),
             "Java": LittleCmd("<<!Java:BIN_FILE>>","\"<<Cur_Src>>\"")
         }
 
-    def __init__(self, pbPath):
-        
-        self.reset()
 
-        #New gen here
-        if os.path.exists(os.path.join(pbPath, "Config.cfg")):
+
+    def LoadYaml(self,pathLike):
+        if path.exists(pathLike):
             
             try:
-                
-                with open(os.path.join(pbPath, "Config.cfg"),"r") as f:
+                with open(pathLike,"r") as f:
                     data = f.read()
-                
+
                 data = yaml.load(data, Loader=yaml.FullLoader)
 
                 if "timeLimit" in data and (type(data["timeLimit"]) == int or type(data["timeLimit"]) == float):
@@ -102,27 +95,90 @@ class Problem:
                             print(f"Adding {l}")
                             self.compiling[l] = LittleCmd(data["compiling"][l][0],data["compiling"][l][1])
 
-                if "runing" in data and type(data["runing"]) == dict:
+                if "running" in data and type(data["running"]) == dict:
                     
-                    self.runing = dict()
+                    self.running = dict()
                     
-                    for l in data["runing"]:
-                        if type(data["runing"][l]) == list and len(data["runing"][l]) == 2:
-                            self.runing[l] = LittleCmd(data["runing"][l][0],data["runing"][l][1])
+                    for l in data["running"]:
+                        if type(data["running"][l]) == list and len(data["running"][l]) == 2:
+                            self.running[l] = LittleCmd(data["running"][l][0],data["running"][l][1])
 
 
             except:
-                self.reset()
-                return
-        else:
+                pass
 
-            #Otog EXE method
-            #TODO OTOG exe goes here
-            pass
+    def __init__(self, pbPath):
+        
+        if not path.exists(path.join(CONFIG_DIR, "ProblemDefault.yaml")):
+            CreateDefault()
+        self.LoadYaml(path.join(CONFIG_DIR, "ProblemDefault.yaml"))
+        
+
+        
+        #New gen here
+        if path.exists(path.join(pbPath, "Config.yaml")):
+            self.LoadYaml(path.join(pbPath, "Config.yaml"))
+
+        else:
+            #Otog Exe here
+            if path.exists(path.join(pbPath, "Task_Com_Run.isl")):
+                print("Found Task_Com_Run.isl")
+                data = "meow"
+                try:
+                    with open(path.join(pbPath,"Task_Com_Run.isl"),"r") as f:
+                        data = f.read()
+                        data = json.loads(data)
+
+                except:
+                    pass
+                
+                if type(data) == dict: 
+                    self.compiling = dict()
+                    self.running = dict()
+
+                    for lang in data:
+                        if "Compiler" in data[lang] and "Runner" in data[lang]:
+                            self.compiling[lang] = LittleCmd(data[lang]["Compiler"]["MainCMD"],
+                            data[lang]["Compiler"]["ArgsCMD"])
+                            self.running[lang] = LittleCmd(data[lang]["Runner"]["MainCMD"],
+                            data[lang]["Runner"]["ArgsCMD"])
             
 
+            if path.exists(path.join(pbPath, "Task_Info.isl")):
+                print("Found Task_Info.isl")
+                data = "meow"
+                try:
+                    with open(path.join(pbPath,"Task_Info.isl"),"r") as f:
+                        data = f.read()
+                        data = json.loads(data)
 
+                except:
+                    pass
+                
 
+                if type(data) == dict: 
+                    
+                    if "TimeLimit" in data:
+                        self.timeLimit = data["TimeLimit"]
+                        print(f"TimeLimit = {self.timeLimit}")
+                    
+                    if "MemLimit" in data:
+                        self.memLimit = data["MemLimit"]
+            
+            if path.exists(path.join(pbPath, "Task_Judge.isl")):
+                data = "meow"
+                try:
+                    with open(path.join(pbPath,"Task_Judge.isl"),"r") as f:
+                        data = f.read()
+                        data = json.loads(data)
+
+                except:
+                    pass
+                
+                if type(data) == dict: 
+
+                    if "MainCMD" in data and "ArgsCMD" in data:
+                        self.judging = LittleCmd(data["MainCMD"],data["ArgsCMD"])
 
         #
 
@@ -138,13 +194,36 @@ class Problem:
             sstr += f"\t{ss} : {self.compiling[ss]}\n"
         
         sstr += f"Running\n"
-        for ss in self.runing:
-            sstr += f"\t{ss} : {self.runing[ss]}\n"
+        for ss in self.running:
+            sstr += f"\t{ss} : {self.running[ss]}\n"
         
         sstr+= "*End of Problem*\n"
             
         return sstr
 
+
+def CreateDefault():
+
+    defData = {
+        "timeLimit" : 1000,
+        "memLimit" : 256,
+        "judging" : ["<<!Python:BIN_FILE>>",f"\"{STD_FILE}\""],
+        "compiling" : {
+            "C" : ["<<!C:BIN_FILE>>","-O2 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
+            "Cpp" : ["<<!Cpp:BIN_FILE>>","-O2 -std=c++17 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
+            "Python": ["<<!Python:BIN_FILE>>","-m py_compile \"<<Cur_Src>>\""],
+            "Java": [path.join("<<!Java:BIN_PATH>>","javac"),"\"<<Cur_Src>>\""]
+        },
+        "running" : {
+            "C" : ["\"<<Cur_Bin>>\"",""],
+            "Cpp" : ["\"<<Cur_Bin>>\"",""],
+            "Python": ["<<!Python:BIN_FILE>>","\"<<Cur_Src>>\""],
+            "Java": ["<<!Java:BIN_FILE>>","\"<<Cur_Src>>\""]
+        }
+    }
+
+    with open(path.join(CONFIG_DIR,"ProblemDefault.ymal"),"w") as f:
+        f.write(yaml.dump(defData))
 
 if __name__ == "__main__":
     x = Problem("asd")

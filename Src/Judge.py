@@ -5,6 +5,8 @@
 import json
 import os
 from Problem import Problem
+import TranferSrc
+import Config
 
 CUR_DIR = os.path.dirname(__file__)
 
@@ -45,12 +47,20 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
 
 
     # TODO:gathering problem info
-    
-
     problemInfo = Problem(problemDir)
-    print(problemInfo)
+
+    if not (proLang in problemInfo.compiling) or not (proLang in problemInfo.compiling):
+        return ("JudgeError",0,100,0,0,"Lang Error")
+    
+    srcDir = TranferSrc.CreateFileToCompileSpace(problemDir,proLang,src)
+
+    if srcDir == False:
+        return ("JudgeError",0,100,0,0,"Tranfer file failed.")
+
+    # TODO:Change Tag <<>>
 
     # TODO:Compile
+
 
 
 

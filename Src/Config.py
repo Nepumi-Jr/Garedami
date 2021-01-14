@@ -11,18 +11,21 @@ from os import path
 import yaml
 
 CUR_DIR = path.dirname(__file__)
-CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config"))
+CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config","Langs"))
 
 configData = dict()
 
 def init():
     #Creating important lang config if they don't exits
 
+    if not path.exists(CONFIG_DIR):
+        os.mkdir(CONFIG_DIR)
+
     #C
-    if not path.exists(path.join(CONFIG_DIR,"C.cfg")):
+    if not path.exists(path.join(CONFIG_DIR,"C.yaml")):
         print("C config not found...",end="")
         try:
-            with open(path.join(CONFIG_DIR,"C.cfg"),"w") as f:
+            with open(path.join(CONFIG_DIR,"C.yaml"),"w") as f:
                 f.write(yaml.dump({"BIN_PATH" : "", 
                 "BIN_FILE" : "gcc","TIME_FACTOR":1.0}))
                 print("Created")
@@ -31,10 +34,10 @@ def init():
     
 
     #Cpp
-    if not path.exists(path.join(CONFIG_DIR,"Cpp.cfg")):
+    if not path.exists(path.join(CONFIG_DIR,"Cpp.yaml")):
         print("Cpp config not found...",end="")
         try:
-            with open(path.join(CONFIG_DIR,"Cpp.cfg"),"w") as f:
+            with open(path.join(CONFIG_DIR,"Cpp.yaml"),"w") as f:
                 f.write(yaml.dump({"BIN_PATH" : "", 
                 "BIN_FILE" : "g++","TIME_FACTOR":1.0}))
                 print("Created")
@@ -43,10 +46,10 @@ def init():
     
 
     #Python
-    if not path.exists(path.join(CONFIG_DIR,"Python.cfg")):
+    if not path.exists(path.join(CONFIG_DIR,"Python.yaml")):
         print("Python config not found...",end="")
         try:
-            with open(path.join(CONFIG_DIR,"Python.cfg"),"w") as f:
+            with open(path.join(CONFIG_DIR,"Python.yaml"),"w") as f:
                 f.write(yaml.dump({"BIN_PATH" : "", 
                 "BIN_FILE" : "python","TIME_FACTOR":5.0}))
                 print("Created")
@@ -55,12 +58,12 @@ def init():
     
 
     #Java
-    if not path.exists(path.join(CONFIG_DIR,"Java.cfg")):
+    if not path.exists(path.join(CONFIG_DIR,"Java.yaml")):
         print("Java config not found...",end="")
         try:
-            with open(path.join(CONFIG_DIR,"Java.cfg"),"w") as f:
+            with open(path.join(CONFIG_DIR,"Java.yaml"),"w") as f:
                 f.write(yaml.dump({"BIN_PATH" : "", 
-                "BIN_FILE" : "Java","TIME_FACTOR":1.5}))
+                "BIN_FILE" : "java","TIME_FACTOR":1.5}))
                 print("Created")
         except:
             print("\aError")
@@ -71,7 +74,7 @@ def ReloadConfig():
 
     configData = dict()
 
-    langs = [f for f in os.listdir(CONFIG_DIR) if path.isfile(path.join(CONFIG_DIR, f)) and f.endswith(".cfg")]
+    langs = [f for f in os.listdir(CONFIG_DIR) if path.isfile(path.join(CONFIG_DIR, f)) and f.endswith(".yaml")]
     
     for lang in langs:
         res = GetData(lang)
@@ -79,7 +82,7 @@ def ReloadConfig():
         if type(res) == str:
             printWarning(f"Config {lang} Error [{res}]")
         else:
-            configData[lang.replace(".cfg","")] = res
+            configData[lang.replace(".yaml","")] = res
 
 
 
