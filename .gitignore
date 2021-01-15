@@ -2,3 +2,5 @@ TestProblems/
 Src/TEST.py
 Config/
 Src/__pycache__/
+Src/Test
+*.pyc

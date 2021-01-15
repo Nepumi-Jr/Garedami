@@ -7,10 +7,11 @@ import os
 from Problem import Problem
 import TranferSrc
 import Config
+import Compile
 
 CUR_DIR = os.path.dirname(__file__)
 
-
+Config.init()
 
 
 
@@ -45,6 +46,8 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
         is useful for find the problem when Judge-side Error
     """
 
+    Config.ReloadConfig()
+
 
     # TODO:gathering problem info
     problemInfo = Problem(problemDir)
@@ -57,13 +60,24 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
     if srcDir == False:
         return ("JudgeError",0,100,0,0,"Tranfer file failed.")
 
-    # TODO:Change Tag <<>>
 
-    # TODO:Compile
+    if problemInfo.DoConvertDir(proLang,srcDir,problemDir) == False:
+        return ("JudgeError",0,100,0,0,"Can't convert data")
 
+
+    
+    res,compileMessage = Compile.DoCompile(problemInfo.compiling[proLang],problemDir)
+    if res == 2:
+        return ("Compile Failed",0,100,0,0,"NOT COMPILE ERROR!")
+    elif res == 1:
+        return ("Compile Error",0,100,0,0,compileMessage)
 
 
 
 
 
     # TODO:Run
+
+
+
+    return ("NANI",69,420,999,0,"WUT?")

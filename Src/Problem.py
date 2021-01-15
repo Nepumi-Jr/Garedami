@@ -1,7 +1,8 @@
 
 import json
-from typing import DefaultDict
 import yaml
+import Config
+import ConvertDir as CD
 from os import path
 
 CUR_DIR = path.dirname(__file__)
@@ -87,12 +88,9 @@ class Problem:
                     
                     
                     self.compiling = dict()
-                    
-                    print(">>>>",data["compiling"],type(data["compiling"]),data["compiling"].keys())
 
                     for l in data["compiling"]:
                         if type(data["compiling"][l]) == list and len(data["compiling"][l]) == 2:
-                            print(f"Adding {l}")
                             self.compiling[l] = LittleCmd(data["compiling"][l][0],data["compiling"][l][1])
 
                 if "running" in data and type(data["running"]) == dict:
@@ -122,7 +120,6 @@ class Problem:
         else:
             #Otog Exe here
             if path.exists(path.join(pbPath, "Task_Com_Run.isl")):
-                print("Found Task_Com_Run.isl")
                 data = "meow"
                 try:
                     with open(path.join(pbPath,"Task_Com_Run.isl"),"r") as f:
@@ -145,7 +142,6 @@ class Problem:
             
 
             if path.exists(path.join(pbPath, "Task_Info.isl")):
-                print("Found Task_Info.isl")
                 data = "meow"
                 try:
                     with open(path.join(pbPath,"Task_Info.isl"),"r") as f:
@@ -160,7 +156,6 @@ class Problem:
                     
                     if "TimeLimit" in data:
                         self.timeLimit = data["TimeLimit"]
-                        print(f"TimeLimit = {self.timeLimit}")
                     
                     if "MemLimit" in data:
                         self.memLimit = data["MemLimit"]
@@ -200,6 +195,38 @@ class Problem:
         sstr+= "*End of Problem*\n"
             
         return sstr
+    
+    def DoConvertDir(self,lang:str,srcDir:str,proDir:str):
+
+        ss = CD.Converting(self.judging.main,srcDir,proDir,lang)
+        if ss == False:return False
+        self.judging.main = ss
+
+        ss = CD.Converting(self.judging.args,srcDir,proDir,lang)
+        if ss == False:return False
+        self.judging.args = ss
+
+
+        ss = CD.Converting(self.compiling[lang].main,srcDir,proDir,lang)
+        if ss == False:return False
+        self.compiling[lang].main = ss
+
+        ss = CD.Converting(self.compiling[lang].args,srcDir,proDir,lang)
+        if ss == False:return False
+        self.compiling[lang].args = ss
+
+
+        ss = CD.Converting(self.running[lang].main,srcDir,proDir,lang)
+        if ss == False:return False
+        self.running[lang].main = ss
+
+        ss = CD.Converting(self.running[lang].args,srcDir,proDir,lang)
+        if ss == False:return False
+        self.running[lang].args = ss
+
+
+        return True
+
 
 
 def CreateDefault():
@@ -207,22 +234,22 @@ def CreateDefault():
     defData = {
         "timeLimit" : 1000,
         "memLimit" : 256,
-        "judging" : ["<<!Python:BIN_FILE>>",f"\"{STD_FILE}\""],
+        "judging" : ["<<!Python:BIN_FILE>>",path.join("<<Cur_Grader>>","StandJudge","StdJudge.py")],
         "compiling" : {
-            "C" : ["<<!C:BIN_FILE>>","-O2 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
-            "Cpp" : ["<<!Cpp:BIN_FILE>>","-O2 -std=c++17 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
-            "Python": ["<<!Python:BIN_FILE>>","-m py_compile \"<<Cur_Src>>\""],
-            "Java": [path.join("<<!Java:BIN_PATH>>","javac"),"\"<<Cur_Src>>\""]
+            "C" : ["\"<<!C:BIN_FILE>>\"","-O2 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
+            "Cpp" : ["\"<<!Cpp:BIN_FILE>>\"","-O2 -std=c++17 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
+            "Python": ["\"<<!Python:BIN_FILE>>\"","-m py_compile \"<<Cur_Src>>\""],
+            "Java": [f'"{path.join("<<!Java:BIN_PATH>>","javac")}"' ,"\"<<Cur_Src>>\""]
         },
         "running" : {
             "C" : ["\"<<Cur_Bin>>\"",""],
             "Cpp" : ["\"<<Cur_Bin>>\"",""],
-            "Python": ["<<!Python:BIN_FILE>>","\"<<Cur_Src>>\""],
-            "Java": ["<<!Java:BIN_FILE>>","\"<<Cur_Src>>\""]
+            "Python": ["\"<<!Python:BIN_FILE>>\"","\"<<Cur_Src>>\""],
+            "Java": ["\"<<!Java:BIN_FILE>>\"","\"<<Cur_Bin>>\""]
         }
     }
 
-    with open(path.join(CONFIG_DIR,"ProblemDefault.ymal"),"w") as f:
+    with open(path.join(CONFIG_DIR,"ProblemDefault.yaml"),"w") as f:
         f.write(yaml.dump(defData))
 
 if __name__ == "__main__":

@@ -72,6 +72,9 @@ def init():
 
 def ReloadConfig():
 
+    global configData
+
+
     configData = dict()
 
     langs = [f for f in os.listdir(CONFIG_DIR) if path.isfile(path.join(CONFIG_DIR, f)) and f.endswith(".yaml")]
@@ -83,6 +86,7 @@ def ReloadConfig():
             printWarning(f"Config {lang} Error [{res}]")
         else:
             configData[lang.replace(".yaml","")] = res
+    
 
 
 
@@ -115,6 +119,7 @@ def GetData(lang:str):
 
     
 def GetBinPath(lang:str):
+    global configData
     """
     Get binary path
 
@@ -125,16 +130,19 @@ def GetBinPath(lang:str):
     return configData[lang]["BIN_PATH"]
 
 def GetBinFile(lang:str):
+    global configData
     """
     Get binary file(eg. gcc.exe)
 
     return 1 is File not found
     """
+
     if not (lang in configData):
         return 1
     return configData[lang]["BIN_FILE"]
 
 def getTimeFactor(lang:str):
+    global configData
     """
     Get time factor for that lang..
 
@@ -144,5 +152,3 @@ def getTimeFactor(lang:str):
         return 1
     return configData[lang]["TIME_FACTOR"]
     
-
-init()

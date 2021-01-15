@@ -54,6 +54,20 @@ def CreateFileToCompileSpace(problemDir:str,lang:str,src:str):
     
     return path.join(problemDir,"CompileSpace",fileName)
 
+def GetBinName(lang:str,srcDir:str)->str:
+
+    if lang == "Java" and path.exists(srcDir):
+
+        src = ""
+
+        with open(srcDir,"r") as f:
+            src = f.read()
+
+        return GetJavaPublicClass(src).replace(".java","")
+
+    return "BIN"
+
+
 
 def DelFileInCompileSpace(problemDir:str,lang:str,src:str):
 
