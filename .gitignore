@@ -4,3 +4,6 @@ Config/
 Src/__pycache__/
 Src/Test
 *.pyc
+*.pyc
+Src/main.py
+StandardJudge/Windows.py

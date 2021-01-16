@@ -11,90 +11,87 @@ from os import path
 import yaml
 
 CUR_DIR = path.dirname(__file__)
-CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config","Langs"))
+CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config"))
+CONFIG_DIR_LANG = path.join(CONFIG_DIR,"Langs")
 
-configData = dict()
+DEFAULT_LANG = {
+    "C" : {"BIN_PATH" : "", "BIN_FILE" : "gcc","TIME_FACTOR":1.0},
+    "Cpp" : {"BIN_PATH" : "", "BIN_FILE" : "g++","TIME_FACTOR":1.0},
+    "Python" : {"BIN_PATH" : "", "BIN_FILE" : "python","TIME_FACTOR":5.0},
+    "Java" : {"BIN_PATH" : "", "BIN_FILE" : "java","TIME_FACTOR":1.5}
+}
+
+DEFAULT_GRADER = {
+    "MAX_TEST_CASE" : 200,
+    "COMPILE_TIME" : 5000,
+    "JUDGE_TIME" : 5000,
+    "MAX_DISPLAY" : 20
+}
+
+DEFAULT_VERDICT = {
+    "P" : "Accept",
+    "-" : "Wrong Answer",
+    "T" : "Time-Limit Exceed",
+    "X" : "Runtime Error",
+    "H" : "Partially correct",
+    "S" : "Skip",
+
+    "?" : "Undefined"
+}
+
+
+
+
+configLang = dict()
+configGrader = dict()
+configVerdict = dict()
 
 def init():
     #Creating important lang config if they don't exits
 
-    if not path.exists(CONFIG_DIR):
-        os.mkdir(CONFIG_DIR)
+    if not path.exists(CONFIG_DIR_LANG):
+        os.mkdir(CONFIG_DIR_LANG)
+    
+    #each lang
+    for lang in DEFAULT_LANG:
+        if not path.exists(path.join(CONFIG_DIR_LANG,f"{lang}.yaml")):
+            print(f"{lang} config not found...",end="")
+            try:
+                with open(path.join(CONFIG_DIR_LANG,f"{lang}.yaml"),"w") as f:
+                    f.write(yaml.dump(DEFAULT_LANG[lang]))
+                    print("Created")
+            except:
+                print("\aError")
 
-    #C
-    if not path.exists(path.join(CONFIG_DIR,"C.yaml")):
-        print("C config not found...",end="")
+    #MainGrader
+    if not path.exists(path.join(CONFIG_DIR,"Grader.yaml")):
+        print("Grader config not found...",end="")
         try:
-            with open(path.join(CONFIG_DIR,"C.yaml"),"w") as f:
-                f.write(yaml.dump({"BIN_PATH" : "", 
-                "BIN_FILE" : "gcc","TIME_FACTOR":1.0}))
+            with open(path.join(CONFIG_DIR,"Grader.yaml"),"w") as f:
+                f.write(yaml.dump(DEFAULT_GRADER))
                 print("Created")
         except:
             print("\aError")
     
-
-    #Cpp
-    if not path.exists(path.join(CONFIG_DIR,"Cpp.yaml")):
-        print("Cpp config not found...",end="")
+    #verdict
+    if not path.exists(path.join(CONFIG_DIR,"Verdict.yaml")):
+        print("Verdict config not found...",end="")
         try:
-            with open(path.join(CONFIG_DIR,"Cpp.yaml"),"w") as f:
-                f.write(yaml.dump({"BIN_PATH" : "", 
-                "BIN_FILE" : "g++","TIME_FACTOR":1.0}))
+            with open(path.join(CONFIG_DIR,"Verdict.yaml"),"w") as f:
+                f.write(yaml.dump(DEFAULT_VERDICT))
                 print("Created")
         except:
             print("\aError")
-    
 
-    #Python
-    if not path.exists(path.join(CONFIG_DIR,"Python.yaml")):
-        print("Python config not found...",end="")
-        try:
-            with open(path.join(CONFIG_DIR,"Python.yaml"),"w") as f:
-                f.write(yaml.dump({"BIN_PATH" : "", 
-                "BIN_FILE" : "python","TIME_FACTOR":5.0}))
-                print("Created")
-        except:
-            print("\aError")
-    
-
-    #Java
-    if not path.exists(path.join(CONFIG_DIR,"Java.yaml")):
-        print("Java config not found...",end="")
-        try:
-            with open(path.join(CONFIG_DIR,"Java.yaml"),"w") as f:
-                f.write(yaml.dump({"BIN_PATH" : "", 
-                "BIN_FILE" : "java","TIME_FACTOR":1.5}))
-                print("Created")
-        except:
-            print("\aError")
     
     ReloadConfig()
 
-def ReloadConfig():
 
-    global configData
+def GetYamlData(dir:str):
 
-
-    configData = dict()
-
-    langs = [f for f in os.listdir(CONFIG_DIR) if path.isfile(path.join(CONFIG_DIR, f)) and f.endswith(".yaml")]
-    
-    for lang in langs:
-        res = GetData(lang)
-
-        if type(res) == str:
-            printWarning(f"Config {lang} Error [{res}]")
-        else:
-            configData[lang.replace(".yaml","")] = res
-    
-
-
-
-
-def GetData(lang:str):
-
+    data = ""
     try:
-        with open(path.join(CONFIG_DIR, lang)) as f:
+        with open(dir) as f:
             data = f.read()
     except:
         return "Can't read file!"
@@ -104,6 +101,16 @@ def GetData(lang:str):
         data = yaml.load(data, Loader=yaml.FullLoader)
     except:
         return "Can't read yaml file!!"
+    
+    return data
+
+
+def GetLangData(lang:str):
+
+    data = GetYamlData(path.join(CONFIG_DIR_LANG, lang))
+
+    if type(data) != dict:
+        return data
     
     
     require = [("BIN_FILE",""),("BIN_PATH",""),("TIME_FACTOR",1.0)]
@@ -117,38 +124,87 @@ def GetData(lang:str):
     
     return data
 
+def ReloadConfig():
+
+    global configLang
+    global configGrader
+    global configVerdict
+
+
+    configLang = dict()
+
+    langs = [f for f in os.listdir(CONFIG_DIR_LANG) if path.isfile(path.join(CONFIG_DIR_LANG, f)) and f.endswith(".yaml")]
+    
+    for lang in langs:
+        res = GetLangData(lang)
+
+        if type(res) == str:
+            printWarning(f"Config {lang} Error [{res}]")
+        else:
+            configLang[lang.replace(".yaml","")] = res
+    
+
+    configGrader = GetYamlData(path.join(CONFIG_DIR,"Grader.yaml"))
+
+    if type(configGrader) != dict:
+        printWarning(f"Config Grader Error {configGrader}")
+        configGrader = DEFAULT_GRADER.copy()
+    else:
+        for config in DEFAULT_GRADER:
+            if not (config in configGrader):
+                configGrader[config] = DEFAULT_GRADER[config]
+    
+
+    configVerdict = GetYamlData(path.join(CONFIG_DIR,"Verdict.yaml"))
+
+    if type(configVerdict) != dict:
+        printWarning(f"Config Verdict Error {configVerdict}")
+        configVerdict = DEFAULT_VERDICT.copy()
+    else:
+        for config in DEFAULT_VERDICT:
+            if not (config in configVerdict):
+                configVerdict[config] = DEFAULT_VERDICT[config]
+    
+        
+
+def Verdict(vv:str)->str:
+    vv = vv.upper()
+    if not (vv in configVerdict) :
+        vv = "?"
+    return configVerdict[vv]
+
     
 def GetBinPath(lang:str):
-    global configData
+    global configLang
     """
     Get binary path
 
     return 1 is Path not found
     """
-    if not (lang in configData):
+    if not (lang in configLang):
         return 1
-    return configData[lang]["BIN_PATH"]
+    return configLang[lang]["BIN_PATH"]
 
 def GetBinFile(lang:str):
-    global configData
+    global configLang
     """
     Get binary file(eg. gcc.exe)
 
     return 1 is File not found
     """
 
-    if not (lang in configData):
+    if not (lang in configLang):
         return 1
-    return configData[lang]["BIN_FILE"]
+    return configLang[lang]["BIN_FILE"]
 
 def getTimeFactor(lang:str):
-    global configData
+    global configLang
     """
     Get time factor for that lang..
 
     return 1 is File not found
     """
-    if not (lang in configData):
+    if not (lang in configLang):
         return 1
-    return configData[lang]["TIME_FACTOR"]
+    return configLang[lang]["TIME_FACTOR"]
     

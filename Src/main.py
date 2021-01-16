@@ -27,38 +27,47 @@ def beautyJudge(somejudge,namae):
 if __name__ == "__main__":
     
 
-    beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("CPat1Error.c")),"-Test C Error-")
+    # beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("CPat1Error.c")),"-Test C Error-")
 
     beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
     GetSrc("CPat1Pass.c")),"-Test C-")
 
-    beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("CPat1NotPass.c")),"-Test C Not-")
+    # beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("CPat1NotPass.c")),"-Test C Not-")
 
 
-    beautyJudge(Judge.judge("69","Cpp",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("CppPat1Error.cpp")),"-Test C++ Error-")
+    # beautyJudge(Judge.judge("69","Cpp",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("CppPat1Error.cpp")),"-Test C++ Error-")
 
-    beautyJudge(Judge.judge("69","Cpp",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("CppPat1Pass.cpp")),"-Test C++-")
+    # beautyJudge(Judge.judge("69","Cpp",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("CppPat1Pass.cpp")),"-Test C++-")
 
-    beautyJudge(Judge.judge("69","Cpp",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("CppPat1NotPass.cpp")),"-Test C++ Not-")
+    # beautyJudge(Judge.judge("69","Cpp",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("CppPat1NotPass.cpp")),"-Test C++ Not-")
 
 
-    beautyJudge(Judge.judge("69","Python",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("PyPat1Error.py")),"-Test Python Error-")
+    # beautyJudge(Judge.judge("69","Python",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("PyPat1Error.py")),"-Test Python Error-")
 
     beautyJudge(Judge.judge("69","Python",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
     GetSrc("PyPat1Pass.py")),"-Test Python-")
 
-    beautyJudge(Judge.judge("69","Python",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("PyPat1NotPass.py")),"-Test Python Not-")
+    # beautyJudge(Judge.judge("69","Python",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("PyPat1NotPass.py")),"-Test Python Not-")
 
+
+    # beautyJudge(Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    # GetSrc("JavaPat1Error.java")),"-Test Java Error-")
 
     beautyJudge(Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
-    GetSrc("JavaPat1Error.java")),"-Test Java Error-")
+    GetSrc("JavaPat1pass.java")),"-Test Java-")
+
+    beautyJudge(Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    GetSrc("JavaPat1NotPass.java")),"-Test Java Wa-")
+
+    beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garademi\TestProblems\Pattern1",
+    GetSrc("CPat1TLE.c")),"-Test TLE-")
 
 
 

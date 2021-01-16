@@ -16,7 +16,7 @@ def Converting(dirToConvert:str,srcDir:str,problemDir:str,lang:str):
 
     graderPath = path.abspath(path.join(path.dirname(__file__),".."))
     
-    rDir = rDir.replace("<<Std_Judge>>",path.join("<<Cur_Grader>>","StandJudge","StdJudge.py"))
+    rDir = rDir.replace("<<Std_Judge>>",path.join("<<Cur_Grader>>","StandardJudge","StdJudge.py"))
     rDir = rDir.replace("<<Cur_Grader>>",graderPath)
     rDir = rDir.replace("<<Cur_Problem>>",problemDir)
 
@@ -29,7 +29,7 @@ def Converting(dirToConvert:str,srcDir:str,problemDir:str,lang:str):
 
     #Incase Java
     rDir = rDir.replace("<<JavaC>>",f'"{path.join("<<!Java:BIN_PATH>>","javac")}"')
-
+    rDir = rDir.replace("<<Cur_JClass>>",binName.replace(".class","").replace(path.join(problemDir,"CompileSpace",""),""))
 
     reg = re.findall("<<![a-zA-Z]+:[a-zA-Z]+_[a-zA-Z]+>>", rDir)
     for e in reg:

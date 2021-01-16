@@ -2,14 +2,8 @@
 from Problem import LittleCmd
 
 from subprocess import Popen, PIPE, STDOUT
-import subprocess
-import signal
-import os
-import time
 
 def DoCompile(comCMD:LittleCmd,problemDir:str):
-    
-    print(comCMD.main+" "+comCMD.args)
 
     try:
 
@@ -20,7 +14,7 @@ def DoCompile(comCMD:LittleCmd,problemDir:str):
 
 
         returnCode = p.returncode
-        if returnCode!= 0:
+        if returnCode != 0:
             return 1,stdOut+"\n"+stdErr
         return 0,""
     except:
