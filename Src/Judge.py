@@ -2,6 +2,7 @@
     Not very done yet!
 """
 
+from Annouce import *
 import json
 import os
 from Problem import Problem
@@ -9,6 +10,7 @@ import TranferSrc
 import Config
 import Compile
 import Run
+import time
 
 CUR_DIR = os.path.dirname(__file__)
 
@@ -47,6 +49,9 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
         is useful for find the problem when Judge-side Error
     """
 
+    if not os.path.exists(problemDir):
+        return ("JudgeError",0,100,0,0,"Are you joking to me?")
+
     Config.ReloadConfig()
 
 
@@ -67,6 +72,7 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
     if problemInfo.DoConvertDir(proLang,srcDir,problemDir) == False:
         return ("JudgeError",0,100,0,0,"Can't convert data")
 
+    print(problemInfo)
 
     #Compile    
     res,compileMessage = Compile.DoCompile(problemInfo.compiling[proLang],problemDir)
@@ -81,6 +87,11 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
 
     res = Run.JudgeRun(problemInfo.judging,problemInfo.running[proLang],proLang,problemDir,timeLimit,int(problemInfo.memLimit))
 
-    TranferSrc.DelFileInCompileSpace(problemDir,proLang,src)
+    time.sleep(0.7)
+
+    try:
+        TranferSrc.DelFileInCompileSpace(problemDir,proLang,src)
+    except:
+        printWarning("Can't Delete Src and Bin")
 
     return res

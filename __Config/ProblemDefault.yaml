@@ -1,0 +1,31 @@
+compiling:
+  C:
+  - '"<<!C:BIN_FILE>>"'
+  - -O2 "<<Cur_Src>>" -o "<<Cur_Bin>>"
+  Cpp:
+  - '"<<!Cpp:BIN_FILE>>"'
+  - -O2 -std=c++17 "<<Cur_Src>>" -o "<<Cur_Bin>>"
+  Java:
+  - '"<<!Java:BIN_PATH>>\javac"'
+  - '-sourcepath "<<Cur_Problem>>\CompileSpace" "<<Cur_Src>>"'
+  Python:
+  - '"<<!Python:BIN_FILE>>"'
+  - -m py_compile "<<Cur_Src>>"
+judging:
+- '"<<!Python:BIN_FILE>>"'
+- '"<<Cur_Grader>>\StandardJudge\StdJudge.py"'
+memLimit: 256
+running:
+  C:
+  - '"<<Cur_Bin>>"'
+  - ''
+  Cpp:
+  - '"<<Cur_Bin>>"'
+  - ''
+  Java:
+  - '"<<!Java:BIN_FILE>>"'
+  - '-cp "<<Cur_Problem>>\CompileSpace" <<Cur_JClass>>'
+  Python:
+  - '"<<!Python:BIN_FILE>>"'
+  - '"<<Cur_Src>>"'
+timeLimit: 1000

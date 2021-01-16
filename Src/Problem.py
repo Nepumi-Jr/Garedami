@@ -234,18 +234,18 @@ def CreateDefault():
     defData = {
         "timeLimit" : 1000,
         "memLimit" : 256,
-        "judging" : ["<<!Python:BIN_FILE>>",path.join("<<Cur_Grader>>","StandJudge","StdJudge.py")],
+        "judging" : ["<<!Python:BIN_FILE>>",f'"{path.join("<<Cur_Grader>>","StandardJudge","StdJudge.py")}"'],
         "compiling" : {
-            "C" : ["\"<<!C:BIN_FILE>>\"","-O2 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
-            "Cpp" : ["\"<<!Cpp:BIN_FILE>>\"","-O2 -std=c++17 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""],
-            "Python": ["\"<<!Python:BIN_FILE>>\"","-m py_compile \"<<Cur_Src>>\""],
+            "C" : ['"<<!C:BIN_FILE>>"','-O2 "<<Cur_Src>>" -o "<<Cur_Bin>>"'],
+            "Cpp" : ['"<<!Cpp:BIN_FILE>>"','-O2 -std=c++17 "<<Cur_Src>>" -o "<<Cur_Bin>>"'],
+            "Python": ['"<<!Python:BIN_FILE>>"','-m py_compile "<<Cur_Src>>"'],
             "Java": [f'"{path.join("<<!Java:BIN_PATH>>","javac")}"' ,f'-sourcepath "{path.join("<<Cur_Problem>>","CompileSpace")}" "<<Cur_Src>>"']
         },
         "running" : {
-            "C" : ["\"<<Cur_Bin>>\"",""],
-            "Cpp" : ["\"<<Cur_Bin>>\"",""],
-            "Python": ["\"<<!Python:BIN_FILE>>\"","\"<<Cur_Src>>\""],
-            "Java": ["\"<<!Java:BIN_FILE>>\"",f'-cp "{path.join("<<Cur_Problem>>","CompileSpace")}" <<Cur_JClass>>']
+            "C" : ['"<<Cur_Bin>>"',''],
+            "Cpp" : ['"<<Cur_Bin>>"',''],
+            "Python": ['"<<!Python:BIN_FILE>>"','"<<Cur_Src>>"'],
+            "Java": ['"<<!Java:BIN_FILE>>"',f'-cp "{path.join("<<Cur_Problem>>","CompileSpace")}" <<Cur_JClass>>']
         }
     }
 

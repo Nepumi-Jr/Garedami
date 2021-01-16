@@ -49,6 +49,9 @@ configVerdict = dict()
 def init():
     #Creating important lang config if they don't exits
 
+    if not path.exists(CONFIG_DIR):
+        os.mkdir(CONFIG_DIR)
+
     if not path.exists(CONFIG_DIR_LANG):
         os.mkdir(CONFIG_DIR_LANG)
     

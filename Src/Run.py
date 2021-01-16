@@ -67,10 +67,12 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,lang:str,problemDir:str,timeLimit
             with open(judgeArgsFile,"w") as f:
                 f.write(f"{testCase + 1}\n{timeLimit}\n{memoryLimit}\n{problemDir}\n{runner.main}\n{runner.args}")
 
+
             p = Popen(f"""{judger.main} {judger.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE)
             (stdOut,stdErr) = p.communicate()
             stdOut = stdOut.decode()
             stdErr = stdErr.decode().replace(problemDir,"..\\")
+
 
             returnCode = p.returncode
             if returnCode != 0:
