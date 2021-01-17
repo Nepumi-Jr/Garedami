@@ -33,6 +33,22 @@ def printError(text):
     else:
         print(f"\a(X) Warnning : {text}")
 
+def printLog(text):
+    if platform == "linux" or platform == "linux2":
+        print(f"{bcolors.OKGREEN}- {text}{bcolors.ENDC}")
+    elif platform == "darwin":
+        print(f"{bcolors.OKGREEN}- {text}{bcolors.ENDC}")
+    else:
+        print(f"- {text}")
+
+def printAnnou(text):
+    if platform == "linux" or platform == "linux2":
+        print(f"\n{bcolors.OKCYAN}<o> {text}{bcolors.ENDC}")
+    elif platform == "darwin":
+        print(f"\n{bcolors.OKCYAN}<o> {text}{bcolors.ENDC}")
+    else:
+        print(f"\n<o> {text}")
+
 if __name__ == "__main__":
     printWarning("Test Warnning")
     printError("Test Error")

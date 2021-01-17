@@ -18,7 +18,7 @@ import time
 
 judgeArgs = sys.argv[-1]
 if not path.exists(judgeArgs):
-    print(f"!;0;1;0;0;Judge args not found :(")
+    print(f"!;0;1;0;0;Judge args not found :(",end = "")
     exit(0)
 
 try:
@@ -26,11 +26,11 @@ try:
         judgeArgs = f.read().split("\n")
 
 except:
-    print(f"!;0;1;0;0;Can't read Judge args:(")
+    print(f"!;0;1;0;0;Can't read Judge args:(",end = "")
     exit(0)
 
 if(len(judgeArgs) < 5):
-    print(f"!;0;1;0;0;Not Enough info to judge")
+    print(f"!;0;1;0;0;Not Enough info to judge",end = "")
     exit(0)
 
 
@@ -40,7 +40,7 @@ memoryLimit = int(judgeArgs[2] or "")#mb
 PROBLEM_DIR = judgeArgs[3] or ""
 
 if(len(judgeArgs) < 5):
-    print(f"!;0;1;0;0;Program not Found")
+    print(f"!;0;1;0;0;Program not Found",end = "")
     exit(0)
 
 outMain = judgeArgs[4] or ""
@@ -71,7 +71,7 @@ def execute_Window():
     except TimeoutExpired:
         runner.terminate()
         runner.kill()
-        return timeLimit,-1,"TIMELXC"
+        return timeLimit,0,"TIMELXC"
 
     runner.terminate()
     runner.kill()
@@ -80,12 +80,12 @@ def execute_Window():
 
 
     if returnCode != 0:
-        return elapsed*1000,-1,f"WTF M{returnCode}"
+        return elapsed*1000,0,f"WTF M{returnCode}"
     else:
-        return elapsed*1000,-1,"OK"
+        return elapsed*1000,0,"OK"
 
 def execute_linux():
-    # TODO:limux version()
+    # TODO:linux version()
     return execute_Window()
 
 
@@ -112,7 +112,7 @@ def compare_equal(outStr:str, solStr:str):
         if (solContent[i].strip())!=(outContent[i].strip()):
             return False,f"Answer Not right in line {i+1}\n"
     
-    return True,"Test OK\nYey!!"
+    return True,"Test OK"
 
 
 
@@ -131,7 +131,7 @@ def compare(outStr:str, solStr:str):
 def main():
     
     if not path.exists(inPath):
-        print(f"E;0;0;0;0;{inPath}")
+        print(f"E;0;0;0;0;End of Test",end = "")
         return
     elapsed, memory, comment = execute()
 
@@ -163,6 +163,6 @@ def main():
     except:
         pass
 
-    print(f"{verdic};{score};{maxscore};{elapsed};{memory};{comment}")
+    print(f"{verdic};{score};{maxscore};{elapsed:.2f};{memory};{comment}",end = "")
 
 main()

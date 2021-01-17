@@ -13,22 +13,14 @@ def GetSrc(namae):
     
     return src
 
-def beautyJudge(somejudge,namae):
-    print(f"------------{namae}------------")
-    print(f"Result : {somejudge[0]}")
-    print(f"Score : {somejudge[1]:.1f}/{somejudge[2]:.1f}")
-    print(f"Time : {somejudge[3]} ms")
-    print(f"Mem : {somejudge[4]} mb")
-    print(f"-Comment-")
-    print(somejudge[5])
-    print("-End of Judge-\n\n")
+
 
 
 if __name__ == "__main__":
     
 
-    # beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
-    # GetSrc("CPat1Error.c")),"-Test C Error-")
+    Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
+    GetSrc("CPat1Error.c"))
 
     # beautyJudge(Judge.judge("69","C",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
     # GetSrc("CPat1Pass.c")),"-Test C-")
@@ -60,8 +52,8 @@ if __name__ == "__main__":
     # beautyJudge(Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
     # GetSrc("JavaPat1Error.java")),"-Test Java Error-")
 
-    beautyJudge(Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
-    GetSrc("JavaPat1pass.java")),"-Test Java-")
+    Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
+    GetSrc("JavaPat1pass.java"))
 
     # beautyJudge(Judge.judge("69","Java",r"D:\TheCodeOfIsla\A lot Programing After Isla\Garedami\TestProblems\Pattern1",
     # GetSrc("JavaPat1NotPass.java")),"-Test Java Wa-")

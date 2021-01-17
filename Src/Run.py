@@ -1,4 +1,6 @@
 
+
+from Annouce import *
 from Problem import LittleCmd
 from subprocess import Popen, PIPE, STDOUT
 import Config
@@ -58,7 +60,9 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,lang:str,problemDir:str,timeLimit
     memory = 0
 
     try:
-    
+        
+        printLog("Judge : "+f"""{judger.main} {judger.args}...""")
+        printLog("runner : "+f"""{runner.main} {runner.args}...""")
 
         for testCase in range(Config.configGrader["MAX_TEST_CASE"]):
 
@@ -68,11 +72,12 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,lang:str,problemDir:str,timeLimit
                 f.write(f"{testCase + 1}\n{timeLimit}\n{memoryLimit}\n{problemDir}\n{runner.main}\n{runner.args}")
 
 
-            p = Popen(f"""{judger.main} {judger.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE)
+            p = Popen(f"""{judger.main} {judger.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
             (stdOut,stdErr) = p.communicate()
             stdOut = stdOut.decode()
             stdErr = stdErr.decode().replace(problemDir,"..\\")
 
+            printLog(f"T{testCase+1} : "+stdOut)
 
             returnCode = p.returncode
             if returnCode != 0:
@@ -90,7 +95,10 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,lang:str,problemDir:str,timeLimit
                     cfVerdict = Config.Verdict(chunk[0].upper())
                     comment = chunk[5]
                 
-                os.remove(judgeArgsFile)
+                try:
+                    os.remove(judgeArgsFile)
+                except:
+                    pass
 
                 if testCase <= Config.configGrader["MAX_DISPLAY"]:
                     return (otogVerdict,score,maxScore,time,memory,comment)

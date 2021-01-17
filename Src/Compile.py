@@ -1,16 +1,18 @@
 
 from Problem import LittleCmd
-
 from subprocess import Popen, PIPE, STDOUT
+
+from Annouce import *
 
 def DoCompile(comCMD:LittleCmd,problemDir:str):
 
-    try:
 
-        p = Popen(comCMD.main+" "+comCMD.args, stdout=PIPE, stdin=PIPE, stderr=PIPE)
+    try:
+        printLog("Compiling:"+comCMD.main+" "+comCMD.args)
+        p = Popen(comCMD.main+" "+comCMD.args, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
         (stdOut,stdErr) = p.communicate()
-        stdOut = stdOut.decode().replace(problemDir,"..\\")
-        stdErr = stdErr.decode().replace(problemDir,"..\\")
+        stdOut = stdOut.decode().replace(problemDir,"..")
+        stdErr = stdErr.decode().replace(problemDir,"..")
 
 
         returnCode = p.returncode
