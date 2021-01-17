@@ -85,8 +85,27 @@ def execute_Window():
         return elapsed*1000,0,"OK"
 
 def execute_linux():
-    # TODO:linux version()
-    return execute_Window()
+    start_time = time.time()
+    runner = Popen(f'ulimit -v {memoryLimit*1000};{outMain} {outArg}  < "{inPath}" > "{outPath}" 2> "{errPath}"',shell= True)
+
+    try:
+        runner.communicate(timeout=timeLimit/1000)
+        returnCode = runner.returncode
+    except TimeoutExpired:
+        runner.terminate()
+        runner.kill()
+        return timeLimit,0,"TIMELXC"
+
+    runner.terminate()
+    runner.kill()
+
+    elapsed = time.time() - start_time
+
+
+    if returnCode != 0:
+        return elapsed*1000,0,f"WTF M{returnCode}"
+    else:
+        return elapsed*1000,0,"OK"
 
 
 def execute():
