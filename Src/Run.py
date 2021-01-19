@@ -2,7 +2,7 @@
 
 from Garedami.Src.Annouce import *
 from Garedami.Src.Problem import LittleCmd
-import Garedami.Src.Config
+from Garedami.Src import Config
 
 from subprocess import Popen, PIPE, STDOUT
 
