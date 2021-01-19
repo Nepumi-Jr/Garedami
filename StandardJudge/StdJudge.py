@@ -86,7 +86,7 @@ def execute_Window():
 
 def execute_linux():
     start_time = time.time()
-    runner = Popen(f'ulimit -v {memoryLimit*1000};{outMain} {outArg}  < "{inPath}" > "{outPath}" 2> "{errPath}"',shell= True)
+    runner = Popen(f'(ulimit -v {memoryLimit*1000};{outMain} {outArg}  < "{inPath}" > "{outPath}" 2> "{errPath}")&',shell= True)
 
     try:
         runner.communicate(timeout=timeLimit/1000)
