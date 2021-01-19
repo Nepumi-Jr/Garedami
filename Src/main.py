@@ -2,7 +2,7 @@
     Example when try to use
 """
 
-import Judge
+import Garedami.Src.Judge
 from os import path
 
 def GetSrc(namae):

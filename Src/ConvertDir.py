@@ -1,6 +1,6 @@
-import TranferSrc
+import Garedami.Src.TranferSrc
+import Garedami.Src.Config
 import re
-import Config
 
 from os import path
 

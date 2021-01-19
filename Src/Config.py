@@ -3,7 +3,7 @@
     ---------
     you can configulation here.
 """
-from Annouce import *
+from Garedami.Src.Annouce import *
 
 import os
 from os import path

@@ -1,8 +1,9 @@
 
-from Problem import LittleCmd
+from Garedami.Src.Problem import LittleCmd
+from Garedami.Src.Annouce import *
+
 from subprocess import Popen, PIPE, STDOUT
 
-from Annouce import *
 
 def DoCompile(comCMD:LittleCmd,problemDir:str):
 

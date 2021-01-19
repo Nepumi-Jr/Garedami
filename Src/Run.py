@@ -1,9 +1,11 @@
 
 
-from Annouce import *
-from Problem import LittleCmd
+from Garedami.Src.Annouce import *
+from Garedami.Src.Problem import LittleCmd
+import Garedami.Src.Config
+
 from subprocess import Popen, PIPE, STDOUT
-import Config
+
 from os import path
 import os
 

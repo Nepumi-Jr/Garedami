@@ -1,8 +1,7 @@
 
-import json
-import yaml
-import Config
-import ConvertDir as CD
+import json, yaml
+import Garedami.Src.Config
+import Garedami.Src.ConvertDir as CD
 from os import path
 
 CUR_DIR = path.dirname(__file__)

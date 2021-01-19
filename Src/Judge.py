@@ -2,15 +2,10 @@
     Not very done yet!
 """
 
-from Annouce import *
-import json
-import os
-from Problem import Problem
-import TranferSrc
-import Config
-import Compile
-import Run
-import time
+from Garedami.Src.Annouce import *
+import json, os, time
+from Garedami.Src.Problem import Problem
+from Garedami.Src import TranferSrc, Config, Compile, Run
 
 CUR_DIR = os.path.dirname(__file__)
 
