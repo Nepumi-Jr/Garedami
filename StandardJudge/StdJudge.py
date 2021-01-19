@@ -86,7 +86,10 @@ def execute_Window():
 
 def execute_linux():
     start_time = time.time()
-    runner = Popen(f'(ulimit -v {memoryLimit*1000};{outMain} {outArg}  < "{inPath}" > "{outPath}" 2> "{errPath}")&',shell= True)
+    if outMain.find("java"):
+        runner = Popen(f'{outMain} -Xmx{int(memoryLimit)}M {outArg} < "{inPath}" > "{outPath}" 2> "{errPath}"', shell= True)
+    else:
+        runner = Popen(f'ulimit -v {memoryLimit*1000};{outMain} {outArg} < "{inPath}" > "{outPath}" 2> "{errPath}"',shell= True)
 
     try:
         runner.communicate(timeout=timeLimit/1000)
@@ -97,7 +100,6 @@ def execute_linux():
         return timeLimit,0,"TIMELXC"
 
     runner.terminate()
-    runner.kill()
 
     elapsed = time.time() - start_time
 
