@@ -39,12 +39,15 @@ DEFAULT_VERDICT = {
     "?" : "Undefined"
 }
 
+DEFAULT_DANGER_WORDS = ["Popen","popen","os.","import os","from os", "import subprocess", "from subprocess"]
+
 
 
 
 configLang = dict()
 configGrader = dict()
 configVerdict = dict()
+configDangerWord = []
 
 def init():
     #Creating important lang config if they don't exits
@@ -82,6 +85,17 @@ def init():
         try:
             with open(path.join(CONFIG_DIR,"Verdict.yaml"),"w") as f:
                 f.write(yaml.dump(DEFAULT_VERDICT))
+                print("Created")
+        except:
+            print("\aError")
+    
+
+    #DangerWord
+    if not path.exists(path.join(CONFIG_DIR,"DangerWord.yaml")):
+        print("Danger word config not found...",end="")
+        try:
+            with open(path.join(CONFIG_DIR,"DangerWord.yaml"),"w") as f:
+                f.write(yaml.dump(DEFAULT_DANGER_WORDS))
                 print("Created")
         except:
             print("\aError")
@@ -132,6 +146,7 @@ def ReloadConfig():
     global configLang
     global configGrader
     global configVerdict
+    global configDangerWord
 
 
     configLang = dict()
@@ -167,6 +182,13 @@ def ReloadConfig():
         for config in DEFAULT_VERDICT:
             if not (config in configVerdict):
                 configVerdict[config] = DEFAULT_VERDICT[config]
+    
+
+    configDangerWord = GetYamlData(path.join(CONFIG_DIR,"DangerWord.yaml"))
+
+    if type(configDangerWord) != dict:
+        printWarning(f"Config Danger word Error {configDangerWord}")
+        configDangerWord = DEFAULT_DANGER_WORDS.copy()
     
         
 
@@ -210,4 +232,8 @@ def getTimeFactor(lang:str):
     if not (lang in configLang):
         return 1
     return configLang[lang]["TIME_FACTOR"]
+
+
+def getDangerWord():
+    return configDangerWord
     

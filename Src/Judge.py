@@ -5,7 +5,7 @@
 from Garedami.Src.Annouce import *
 import json, os, time
 from Garedami.Src.Problem import Problem
-from Garedami.Src import TranferSrc, Config, Compile, Run
+from Garedami.Src import TranferSrc, Config, Compile, Run, DangerSrc
 
 CUR_DIR = os.path.dirname(__file__)
 
@@ -71,6 +71,12 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
         beautyJudge(("JudgeError",0,100,0,0,"Lang Error"))
         return ("JudgeError",0,100,0,0,"Lang Error")
     
+    printLog("Checking source")
+    danger = DangerSrc.IsDanger(src)
+    if danger != False:
+        return ("SrcError",0,100,0,0,f"Found Danger word {danger}")
+
+
     TranferSrc.CreateFromShadow(problemDir)
 
     srcDir = TranferSrc.CreateFileToCompileSpace(problemDir,proLang,src)
