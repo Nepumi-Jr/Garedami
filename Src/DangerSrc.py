@@ -9,7 +9,7 @@ def IsDanger(srcStr:str):
     # TODO: It's better to use Suffix array!
 
     for word in danger:
-        if srcStr.find(word):
+        if srcStr.find(word) != -1:
             printError(f"Found Danger word!{word}")
             return word
     
