@@ -27,11 +27,11 @@ def printWarning(text):
 
 def printError(text):
     if platform == "linux" or platform == "linux2":
-        print(f"{bcolors.FAIL}\a(X) Warnning:{text}{bcolors.ENDC}")
+        print(f"{bcolors.FAIL}\a(X) Error:{text}{bcolors.ENDC}")
     elif platform == "darwin":
-        print(f"{bcolors.FAIL}\a(X) Warnning:{text}{bcolors.ENDC}")
+        print(f"{bcolors.FAIL}\a(X) Error:{text}{bcolors.ENDC}")
     else:
-        print(f"\a(X) Warnning : {text}")
+        print(f"\a(X) Error : {text}")
 
 def printLog(text):
     if platform == "linux" or platform == "linux2":

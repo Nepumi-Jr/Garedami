@@ -10,7 +10,7 @@ def IsDanger(srcStr:str):
 
     for word in danger:
         if srcStr.find(word):
-            printError("fFound Danger word!{word}")
+            printError(f"Found Danger word!{word}")
             return word
     
     return False
