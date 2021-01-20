@@ -3,6 +3,7 @@ Src/TEST.py
 Config/
 Src/Test
 *.pyc
-*.pyc
 Src/main.py
 StandardJudge/Windows.py
+.vscode/
+Src/__pycache__/
