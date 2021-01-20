@@ -186,7 +186,7 @@ def ReloadConfig():
 
     configDangerWord = GetYamlData(path.join(CONFIG_DIR,"DangerWord.yaml"))
 
-    if type(configDangerWord) != dict:
+    if type(configDangerWord) != list:
         printWarning(f"Config Danger word Error {configDangerWord}")
         configDangerWord = DEFAULT_DANGER_WORDS.copy()
     
