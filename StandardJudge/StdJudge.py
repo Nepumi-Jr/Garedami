@@ -1,5 +1,5 @@
 """
-    Input by 7 or more argument
+    Input by 9 or more argument
     1 : test case
     2 : timeLimit in ms
     3 : memoryLimit in mb
