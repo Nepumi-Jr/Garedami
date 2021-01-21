@@ -89,7 +89,7 @@ def execute_linux():
 
     isJava = outMain.find("java")
 
-    if isJava:
+    if isJava != -1:
         start_time = time.time()
         runner = Popen(f'{outMain} -Xmx{int(memoryLimit)}M {outArg} < "{inPath}" > "{outPath}" 2> "{errPath}" ; exit', shell= True, preexec_fn=os.setsid)
     else:
