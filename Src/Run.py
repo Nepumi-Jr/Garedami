@@ -8,6 +8,7 @@ from subprocess import Popen, PIPE, STDOUT
 
 from os import path
 import os
+from time import sleep
 
 def IsFloat(content:str):
     try:
@@ -67,12 +68,13 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,srcPath:str,problemDir:str,timeLi
         printLog("runner : "+f"""{runner.main} {runner.args}...""")
 
         for testCase in range(Config.configGrader["MAX_TEST_CASE"]):
-
+            
             judgeArgsFile = path.join(problemDir,"JudgeArg.isl")
 
             with open(judgeArgsFile,"w") as f:
                 f.write(f"{testCase + 1}\n{timeLimit}\n{memoryLimit}\n{problemDir}\n{srcPath}\n{runner.main}\n{runner.args}")
 
+            sleep(0.05)
 
             p = Popen(f"""{judger.main} {judger.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
             (stdOut,stdErr) = p.communicate()

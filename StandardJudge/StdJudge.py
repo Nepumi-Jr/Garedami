@@ -100,14 +100,10 @@ def execute_linux():
         runner.communicate(timeout=timeLimit/1000)
         returnCode = runner.returncode
     except TimeoutExpired:
-        runner.terminate()
-        runner.kill()
         if os.path.exists("/proc/" + str(runner.pid)):
             os.killpg(os.getpgid(runner.pid), signal.SIGTERM)
         return timeLimit,0,"TIMELXC"
 
-    runner.terminate()
-    runner.kill()
     if os.path.exists("/proc/" + str(runner.pid)):
         os.killpg(os.getpgid(runner.pid), signal.SIGTERM)
 
