@@ -51,7 +51,7 @@ def CheckFormat(judgeStr:str):
 
     return chunk[0:5] + [comment[:-1]]
 
-def JudgeRun(judger:LittleCmd,runner:LittleCmd,lang:str,problemDir:str,timeLimit:int,memoryLimit:int):
+def JudgeRun(judger:LittleCmd,runner:LittleCmd,srcPath:str,problemDir:str,timeLimit:int,memoryLimit:int):
     
     otogVerdict = ""
     cfVerdict = "Accept"
@@ -71,7 +71,7 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,lang:str,problemDir:str,timeLimit
             judgeArgsFile = path.join(problemDir,"JudgeArg.isl")
 
             with open(judgeArgsFile,"w") as f:
-                f.write(f"{testCase + 1}\n{timeLimit}\n{memoryLimit}\n{problemDir}\n{runner.main}\n{runner.args}")
+                f.write(f"{testCase + 1}\n{timeLimit}\n{memoryLimit}\n{problemDir}\n{srcPath}\n{runner.main}\n{runner.args}")
 
 
             p = Popen(f"""{judger.main} {judger.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)

@@ -108,7 +108,7 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
 
     timeLimit = int(problemInfo.timeLimit * Config.getTimeFactor(proLang))
 
-    res = Run.JudgeRun(problemInfo.judging,problemInfo.running[proLang],proLang,problemDir,timeLimit,int(problemInfo.memLimit))
+    res = Run.JudgeRun(problemInfo.judging,problemInfo.running[proLang],srcDir,problemDir,timeLimit,int(problemInfo.memLimit))
 
     time.sleep(0.2)
 
