@@ -9,8 +9,8 @@ CUR_DIR = path.dirname(__file__)
 CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config"))
 
 
-STD_FILE = path.abspath(path.join(CUR_DIR,"..","StandJudge","StdJudge.py"))
-
+STD_FILE = path.abspath(path.join(CUR_DIR,"..","StandardJudge","StdJudge.py"))
+STD_CMP = path.abspath(path.join(CUR_DIR,"..","StandardJudge","StdCMP.cpp"))
 
 class LittleCmd:
     main = ""
@@ -28,14 +28,14 @@ class Problem:
     Use to get problem info
     -----------
     
-    timelimit : int
-        in ms.
     
-    memLimit : int
-        in megabyte.
-    
-    judging : LittleCmd()
+    judgingCompile : LittleCmd()
+    judgingRun : LittleCmd()
         in case of custom judge
+
+    compareCompile
+    compareRun : LittleCmd()
+        in case of custom compare
     
 
     compiling : dict
@@ -45,10 +45,11 @@ class Problem:
         same as compile but run
 
     """
-
-    timeLimit = 1000
-    memLimit = 256
-    judging = LittleCmd("<<!Python:BIN_FILE>>",f"\"{STD_FILE}\"")
+    judgingCompile = LittleCmd('<<!Python:BIN_FILE>>',f'-m py_compile "{STD_FILE}"')
+    judgingRun = LittleCmd('<<!Python:BIN_FILE>>',f'"{STD_FILE}"')
+    
+    compareCompile = LittleCmd('<<!Cpp:BIN_FILE>>',f'-O2 -std=c++17 "{STD_CMP}" -o {path.abspath(path.join(CUR_DIR,"..","StandJudge","StdCheckBin"))}')
+    compareRun = LittleCmd(f'cd {path.abspath(path.join(CUR_DIR,"..","StandJudge"))} ; {path.abspath(path.join(CUR_DIR,"..","StandJudge","StdCheckBin"))}',f'')
 
     compiling = {
             "C" : LittleCmd("<<!C:BIN_FILE>>","-O2 \"<<Cur_Src>>\" -o \"<<Cur_Bin>>\""),
@@ -74,19 +75,24 @@ class Problem:
                     data = f.read()
 
                 data = yaml.load(data, Loader=yaml.FullLoader)
+                
+                if "judgingCompile" in data and type(data["judgingCompile"]) == list and len(data["judgingCompile"]) == 2:
+                    self.judgingCompile = LittleCmd(data["judgingCompile"][0],data["judgingCompile"][1])
 
-                if "timeLimit" in data and (type(data["timeLimit"]) == int or type(data["timeLimit"]) == float):
-                    self.timeLimit = data["timeLimit"]
-                
-                if "memLimit" in data and (type(data["memLimit"]) == int or type(data["timeLimit"]) == float):
-                    self.memLimit = data["memLimit"]
-                
-                if "judging" in data and type(data["judging"]) == list and len(data["judging"]) == 2:
-                    self.judging = LittleCmd(data["judging"][0],data["judging"][1])
+                if "judgingRun" in data and type(data["judgingRun"]) == list and len(data["judgingRun"]) == 2:
+                    self.judgingRun = LittleCmd(data["judgingRun"][0],data["judgingRun"][1])
+
+
+                if "compareCompile" in data and type(data["compareCompile"]) == list and len(data["compareCompile"]) == 2:
+                    self.compareCompile = LittleCmd(data["compareCompile"][0],data["compareCompile"][1])
+
+                if "compareRun" in data and type(data["compareRun"]) == list and len(data["compareRun"]) == 2:
+                    self.compareRun = LittleCmd(data["compareRun"][0],data["compareRun"][1])
+
+
 
                 if "compiling" in data and type(data["compiling"]) == dict:
-                    
-                    
+                
                     self.compiling = dict()
 
                     for l in data["compiling"]:
@@ -139,50 +145,15 @@ class Problem:
                             data[lang]["Compiler"]["ArgsCMD"])
                             self.running[lang] = LittleCmd(data[lang]["Runner"]["MainCMD"],
                             data[lang]["Runner"]["ArgsCMD"])
-            
 
-            if path.exists(path.join(pbPath, "Task_Info.isl")):
-                data = "meow"
-                try:
-                    with open(path.join(pbPath,"Task_Info.isl"),"r") as f:
-                        data = f.read()
-                        data = json.loads(data)
-
-                except:
-                    pass
-                
-
-                if type(data) == dict: 
-                    
-                    if "TimeLimit" in data:
-                        self.timeLimit = data["TimeLimit"]
-                    
-                    if "MemLimit" in data:
-                        self.memLimit = data["MemLimit"]
-            
-            if path.exists(path.join(pbPath, "Task_Judge.isl")):
-                data = "meow"
-                try:
-                    with open(path.join(pbPath,"Task_Judge.isl"),"r") as f:
-                        data = f.read()
-                        data = json.loads(data)
-
-                except:
-                    pass
-                
-                if type(data) == dict: 
-
-                    if "MainCMD" in data and "ArgsCMD" in data:
-                        self.judging = LittleCmd(data["MainCMD"],data["ArgsCMD"])
-
-        #
 
     def __str__(self):
         sstr = ""
 
-        sstr += f"Time : {self.timeLimit}\n"
-        sstr += f"Mem : {self.memLimit}\n"
-        sstr += f"Judge : {self.judging}\n"
+        sstr += f"judgingCompile : {self.judgingCompile}\n"
+        sstr += f"judgingRun : {self.judgingRun}\n"
+        sstr += f"compareCompile : {self.compareCompile}\n"
+        sstr += f"compareRun : {self.compareRun}\n"
 
         sstr += f"Compiling\n"
         for ss in self.compiling:
@@ -198,13 +169,38 @@ class Problem:
     
     def DoConvertDir(self,lang:str,srcDir:str,proDir:str):
 
-        ss = CD.Converting(self.judging.main,srcDir,proDir,lang)
+        ss = CD.Converting(self.judgingCompile.main,srcDir,proDir,lang)
         if ss == False:return False
-        self.judging.main = ss
+        self.judgingCompile.main = ss
 
-        ss = CD.Converting(self.judging.args,srcDir,proDir,lang)
+        ss = CD.Converting(self.judgingCompile.args,srcDir,proDir,lang)
         if ss == False:return False
-        self.judging.args = ss
+        self.judgingCompile.args = ss
+
+        ss = CD.Converting(self.judgingRun.main,srcDir,proDir,lang)
+        if ss == False:return False
+        self.judgingRun.main = ss
+
+        ss = CD.Converting(self.judgingRun.args,srcDir,proDir,lang)
+        if ss == False:return False
+        self.judgingRun.args = ss
+
+        
+        ss = CD.Converting(self.compareCompile.main,srcDir,proDir,lang)
+        if ss == False:return False
+        self.compareCompile.main = ss
+
+        ss = CD.Converting(self.compareCompile.args,srcDir,proDir,lang)
+        if ss == False:return False
+        self.compareCompile.args = ss
+
+        ss = CD.Converting(self.compareRun.main,srcDir,proDir,lang)
+        if ss == False:return False
+        self.compareRun.main = ss
+
+        ss = CD.Converting(self.compareRun.args,srcDir,proDir,lang)
+        if ss == False:return False
+        self.compareRun.args = ss
 
 
         ss = CD.Converting(self.compiling[lang].main,srcDir,proDir,lang)
@@ -232,9 +228,12 @@ class Problem:
 def CreateDefault():
 
     defData = {
-        "timeLimit" : 1000,
-        "memLimit" : 256,
-        "judging" : ["<<!Python:BIN_FILE>>",f'"{path.join("<<Cur_Grader>>","StandardJudge","StdJudge.py")}"'],
+        "judgingCompile" : ["<<!Python:BIN_FILE>>",f'-m py_compile "{STD_FILE}"'],
+        "judgingRun" : ["<<!Python:BIN_FILE>>",f'"{STD_FILE}"'],
+
+        "compareCompile" : ['<<!Cpp:BIN_FILE>>',f'-O2 -std=c++17 "{STD_CMP}" -o "{path.join("<<Cur_Problem>>","StdCheckBin")}"'],
+        "compareRun" : [f'"{path.join("<<Cur_Problem>>","StdCheckBin")}"',f''],
+
         "compiling" : {
             "C" : ['"<<!C:BIN_FILE>>"','-O2 "<<Cur_Src>>" -o "<<Cur_Bin>>"'],
             "Cpp" : ['"<<!Cpp:BIN_FILE>>"','-O2 -std=c++17 "<<Cur_Src>>" -o "<<Cur_Bin>>"'],

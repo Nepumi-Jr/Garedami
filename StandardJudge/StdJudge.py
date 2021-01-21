@@ -5,8 +5,10 @@
     3 : memoryLimit in mb
     4 : PROBLEM_DIR
     5 : source path
-    6 : run cmd
-    7 : run args (opional)
+    6 : cmp cmd
+    7 : cmp args
+    8 : run cmd
+    9 : run args
 
     output will return by stdout in formating below
     {verdic};{score};{maxscore};{elapsed};{memory};{comment}
@@ -31,8 +33,8 @@ except:
     print(f"!;0;1;0;0;Can't read Judge args:(",end = "")
     exit(0)
 
-if(len(judgeArgs) < 4):
-    print(f"!;0;1;0;0;Not Enough info to judge",end = "")
+if(len(judgeArgs) < 9):
+    print(f"!;0;1;0;0;Not Enough info to judge\nexpected 9 args got {len(judgeArgs)} args",end = "")
     exit(0)
 
 
@@ -47,13 +49,12 @@ if(len(judgeArgs) < 6):
 
 
 srcPath = judgeArgs[4] or ""
-outMain = judgeArgs[5] or ""
 
-outArg = ""
+cmpMain = judgeArgs[5] or ""
+cmpArg = judgeArgs[6] or ""
 
-for i in range(6,len(judgeArgs)):
-    outArg += judgeArgs[i] + " "
-
+outMain = judgeArgs[7]
+outArg = judgeArgs[8]
 
 
 inPath = path.join(PROBLEM_DIR,f"{testCase}.in")
@@ -61,6 +62,10 @@ outPath = path.join(PROBLEM_DIR,"output.txt")
 errPath = path.join(PROBLEM_DIR,"errout.txt")
 solPath = path.join(PROBLEM_DIR,f"{testCase}.sol")
 
+
+def writeLog(text:str):
+    with open(path.join(PROBLEM_DIR,f"{int(time.time())}LOG.txt"),"w") as f:
+        f.write(text)
 
 def execute_Window():
     start_time = time.time()
@@ -123,62 +128,34 @@ def execute():
         return execute_Window()
 
 
-def OtogCompare(langCheck,checkPath):
 
-    mainCmd = "Nani"
-
-    if langCheck == "Cpp":
-        mainCmd = "g++"
-
-    if mainCmd == "Nani":
-        return False,"OTOG_!"
-
-    runner = Popen(f'{mainCmd} "{checkPath}" -o "{path.join(PROBLEM_DIR,"BinCheck")}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
-    runner.communicate()
-
-    if sys.platform == "linux" or sys.platform == "linux2":
-        runner = Popen(f'cd  "{PROBLEM_DIR}"; "{path.join(PROBLEM_DIR,"BinCheck")}" "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
-    else:
-        runner = Popen(f'cd /d "{PROBLEM_DIR}" & "{path.join(PROBLEM_DIR,"BinCheck")}" "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
-    
-    runner.communicate()
-
-    if not path.exists(path.join(PROBLEM_DIR,"grader_result.txt")):
-        return False,"OTOG_!"
-    
-    otogVerdict = ""
-    with open(path.join(PROBLEM_DIR,"grader_result.txt"),"r") as f:
-        otogVerdict = f.read()
-    
-    return True,"OTOG_"+otogVerdict
-
-
-def compare_equal():
-    with open(solPath,"r") as solFile:
-        solContent = solFile.read().strip().split("\n")
-
-    with open(outPath,"r") as Out_File:
-        outContent = Out_File.read().strip().split("\n")
-
-    if len(solContent)!=len(outContent):
-        return False,f"Expected {len(solContent)} line(s) but you got {len(outContent)} lines\n"
-    
-    for i in range(len(outContent)):
-        if (solContent[i].strip())!=(outContent[i].strip()):
-            return False,f"Answer Not right in line {i+1}\n"
-    
-    return True,"Test OK"
 
 
 
 def compare():
 
-    if(not path.exists(outPath)):return False,"File not found :(\n"
+    if(not path.exists(outPath)):return "-","File not found :(\n"
 
-    if path.exists(path.join(PROBLEM_DIR,"check.cpp")):
-        return OtogCompare("Cpp",path.join(PROBLEM_DIR,"check.cpp"))
+    if sys.platform == "linux" or sys.platform == "linux2":
+        runner = Popen(f'cd "{PROBLEM_DIR}"; {cmpMain} {cmpArg} "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
+    else:
+        runner = Popen(f'cd /d "{PROBLEM_DIR}" & {cmpMain} {cmpArg} "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
+    
+    #writeLog(f'cd /d "{PROBLEM_DIR}" & {cmpMain} {cmpArg} "{solPath}" "{inPath}" "{srcPath}"')
 
-    return compare_equal()
+    runner.communicate()
+
+    if not path.exists(path.join(PROBLEM_DIR,"grader_result.txt")):
+        return "!","grader_result Not found"
+    
+    otogVerdict = ""
+    with open(path.join(PROBLEM_DIR,"grader_result.txt"),"r") as f:
+        otogVerdict = f.read()
+    
+    if otogVerdict != "P":
+        return "-","WrongAnswer"
+
+    return otogVerdict,"Test ok Yey!"
 
     
 
@@ -194,26 +171,10 @@ def main():
     score = 0
     maxscore = 1.0
     if comment == "OK":
-        res,comment = compare()
-        s = "ss"
 
-        verdic = "P" if res else "-"
-        score = 1.0 if res else 0
-
-        if comment.startswith("OTOG_"):
-            if comment == "OTOG_!":
-                verdic = "!"
-                score = 0.0
-                comment = "Compare_Error"
-            elif comment == "OTOG_P":
-                verdic = "P"
-                score = 1.0
-                comment = "Test Ok!"
-            else:
-                verdic = "-"
-                score = 0.0
-                comment = "Test Ok!"
-        
+        ver,comment = compare()
+        verdic = ver
+        score = 1.0 if ver == "P" else 0
 
     elif comment == "JUDGEER":
         verdic = "!"
@@ -233,8 +194,9 @@ def main():
 
     # Clean up tmp directory
     try:
-        if(path.exists(outPath)):os.remove(outPath)
-        if(path.exists(errPath)):os.remove(errPath)
+        #if(path.exists(outPath)):os.remove(outPath)
+        #if(path.exists(errPath)):os.remove(errPath)
+        pass
     except:
         pass
 

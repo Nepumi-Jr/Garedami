@@ -1,7 +1,7 @@
 
 
 from Garedami.Src.Annouce import *
-from Garedami.Src.Problem import LittleCmd
+from Garedami.Src.Problem import LittleCmd, Problem
 from Garedami.Src import Config
 
 from subprocess import Popen, PIPE, STDOUT
@@ -52,7 +52,7 @@ def CheckFormat(judgeStr:str):
 
     return chunk[0:5] + [comment[:-1]]
 
-def JudgeRun(judger:LittleCmd,runner:LittleCmd,srcPath:str,problemDir:str,timeLimit:int,memoryLimit:int):
+def JudgeRun(problemInfo:Problem,proLang:str,srcPath:str,problemDir:str,timeLimit:int,memoryLimit:int):
     
     otogVerdict = ""
     cfVerdict = "Accept"
@@ -64,19 +64,29 @@ def JudgeRun(judger:LittleCmd,runner:LittleCmd,srcPath:str,problemDir:str,timeLi
 
     try:
         
-        printLog("Judge : "+f"""{judger.main} {judger.args}...""")
-        printLog("runner : "+f"""{runner.main} {runner.args}...""")
+        printLog("Judge : "+f"""{problemInfo.judgingRun.main} {problemInfo.judgingRun.args}""")
+        printLog("Compr : "+f"""{problemInfo.compareRun.main} {problemInfo.compareRun.args}""")
+        printLog("runni : "+f"""{problemInfo.running[proLang].main} {problemInfo.running[proLang].args}""")
 
         for testCase in range(Config.configGrader["MAX_TEST_CASE"]):
             
             judgeArgsFile = path.join(problemDir,"JudgeArg.isl")
 
             with open(judgeArgsFile,"w") as f:
-                f.write(f"{testCase + 1}\n{timeLimit}\n{memoryLimit}\n{problemDir}\n{srcPath}\n{runner.main}\n{runner.args}")
+                f.write(f"{testCase + 1}\n" +
+                f"{timeLimit}\n"+
+                f"{memoryLimit}\n"+
+                f"{problemDir}\n"+
+                f"{srcPath}\n"+
+                f"{problemInfo.compareRun.main}\n"+
+                f"{problemInfo.compareRun.args}\n"+
+                f"{problemInfo.running[proLang].main}\n"+
+                f"{problemInfo.running[proLang].args}")
 
-            sleep(0.05)
+            sleep(0.09)
 
-            p = Popen(f"""{judger.main} {judger.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
+
+            p = Popen(f"""{problemInfo.judgingRun.main} {problemInfo.judgingRun.args} "{judgeArgsFile}" """, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
             (stdOut,stdErr) = p.communicate()
             stdOut = stdOut.decode()
             stdErr = stdErr.decode().replace(problemDir,"..\\")

@@ -23,7 +23,7 @@ def beautyJudge(somejudge):
 
 
 
-def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
+def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,memJudge:int = 64) -> tuple():
     """
     This is main function that use for judging user
 
@@ -37,6 +37,10 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
         is Directory of that problem.
     src : str
         is source code that user want to judge
+    time : int in ms
+        time for Judging
+    memory : int in mb
+        meory for judging
 
     Output 
     ----------
@@ -90,10 +94,31 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
         return ("JudgeError",0,100,0,0,"Can't convert data")
 
 
+    #Compile judge  
+    printAnnou("Compiling Judge...")
+    res,compileMessage = Compile.DoCompile(problemInfo.judgingCompile,problemDir)
+    if res == 2:
+        beautyJudge(("Judge Compile Failed",0,100,0,0,"IMPOSSIBLE"))
+        return ("Judge Compile Failed",0,100,0,0,"IMPOSSIBLE")
+    elif res == 1:
+        beautyJudge(("Judge Compile Error",0,100,0,0,compileMessage))
+        return ("Judge Compile Error",0,100,0,0,compileMessage)
 
+
+    #Compile Cmp  
+    printAnnou("Compiling Cmp...")
+    res,compileMessage = Compile.DoCompile(problemInfo.compareCompile,problemDir)
+    if res == 2:
+        beautyJudge(("Cmp Compile Failed",0,100,0,0,"IMPOSSIBLE"))
+        return ("Cmp Compile Failed",0,100,0,0,"IMPOSSIBLE")
+    elif res == 1:
+        beautyJudge(("Cmp Compile Error",0,100,0,0,compileMessage))
+        return ("Cmp Compile Error",0,100,0,0,compileMessage)
+
+    
+
+    #Compile src
     printAnnou("Compiling...")
-
-    #Compile    
     res,compileMessage = Compile.DoCompile(problemInfo.compiling[proLang],problemDir)
     if res == 2:
         beautyJudge(("Compile Failed",0,100,0,0,"NOT COMPILE ERROR!"))
@@ -103,12 +128,12 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str) -> tuple():
         return ("Compile Error",0,100,0,0,compileMessage)
 
 
-    printAnnou("Running...")
+    
     #Run
+    printAnnou("Running...")
+    timeLimit = int(timeJudge * Config.getTimeFactor(proLang))
 
-    timeLimit = int(problemInfo.timeLimit * Config.getTimeFactor(proLang))
-
-    res = Run.JudgeRun(problemInfo.judging,problemInfo.running[proLang],srcDir,problemDir,timeLimit,int(problemInfo.memLimit))
+    res = Run.JudgeRun(problemInfo,proLang,srcDir,problemDir,timeLimit,memJudge)
 
     time.sleep(0.2)
 

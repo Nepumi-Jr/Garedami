@@ -16,6 +16,7 @@ def Converting(dirToConvert:str,srcDir:str,problemDir:str,lang:str):
     graderPath = path.abspath(path.join(path.dirname(__file__),".."))
     
     rDir = rDir.replace("<<Std_Judge>>",path.join("<<Cur_Grader>>","StandardJudge","StdJudge.py"))
+    rDir = rDir.replace("<<Std_CMP>>",path.join("<<Cur_Grader>>","StandardJudge","StdCMP.cpp"))
     rDir = rDir.replace("<<Cur_Grader>>",graderPath)
     rDir = rDir.replace("<<Cur_Problem>>",problemDir)
 
