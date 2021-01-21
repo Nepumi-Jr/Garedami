@@ -140,8 +140,11 @@ def OtogCompare(langCheck,checkPath):
     runner = Popen(f'{mainCmd} "{checkPath}" -o "{path.join(PROBLEM_DIR,"BinCheck")}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
     runner.communicate()
 
-
-    runner = Popen(f'cd /d "{PROBLEM_DIR}" & "{path.join(PROBLEM_DIR,"BinCheck")}" "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
+    if sys.platform == "linux" or sys.platform == "linux2":
+        runner = Popen(f'cd  "{PROBLEM_DIR}"; "{path.join(PROBLEM_DIR,"BinCheck")}" "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
+    else:
+        runner = Popen(f'cd /d "{PROBLEM_DIR}" & "{path.join(PROBLEM_DIR,"BinCheck")}" "{solPath}" "{inPath}" "{srcPath}"', stdout=PIPE, stdin=PIPE, stderr=PIPE,shell= True)
+    
     runner.communicate()
 
     if not path.exists(path.join(PROBLEM_DIR,"grader_result.txt")):
