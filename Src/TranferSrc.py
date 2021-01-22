@@ -13,10 +13,11 @@ def GetJavaPublicClass(src:str):
     if pc == -1:
         return False
     
-    if pc+12 > op:
+
+    if pc+5 > op:
         return False
     
-    if src[pc+12:op] == "":
+    if src[pc+5:op] == "":
         return False
     
     return src[pc+12:op].strip()
