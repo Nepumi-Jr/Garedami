@@ -20,7 +20,7 @@ def GetJavaPublicClass(src:str):
     if src[pc+5:op] == "":
         return False
     
-    return src[pc+12:op].strip()
+    return src[pc+5:op].strip()
 
 def GetNameForSrc(lang:str,src:str):
     fileName = "Src"
