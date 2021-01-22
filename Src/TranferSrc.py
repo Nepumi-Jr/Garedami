@@ -5,7 +5,7 @@ import os,shutil
 
 def GetJavaPublicClass(src:str):
     #public class <Name> {
-    pc = src.find("public class")
+    pc = src.find("class")
     if pc == -1:
         return False
     
