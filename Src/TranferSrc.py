@@ -35,7 +35,7 @@ def GetNameForSrc(lang:str,src:str):
         
         className = GetJavaPublicClass(src)
         if className == False:
-            return False
+            return 0
         fileName = f"{className}.java"
     
     return fileName

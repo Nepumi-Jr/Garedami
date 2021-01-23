@@ -62,7 +62,7 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     printLog("Checking problem directory")
     if not os.path.exists(problemDir):
         printError("Really? problemDir not found :(")
-        return ("JudgeError",0,100,0,0,"Are you joking to me?")
+        return ("JudgeError",0,100,0,0,"F**k admin!")
 
     Config.ReloadConfig()
 
@@ -72,8 +72,8 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
 
     printLog("Checking lang")
     if not (proLang in problemInfo.compiling) or not (proLang in problemInfo.compiling):
-        beautyJudge(("JudgeError",0,100,0,0,"Lang Error"))
-        return ("JudgeError",0,100,0,0,"Lang Error")
+        beautyJudge(("Compile Error?",0,100,0,0,f"{proLang} is not allowed"))
+        return ("Compile Error?",0,100,0,0,f"{proLang} is not allowed")
     
     printLog("Checking source")
     danger = DangerSrc.IsDanger(src)
@@ -88,6 +88,10 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     if srcDir == False:
         beautyJudge(("JudgeError",0,100,0,0,"Tranfer file failed."))
         return ("JudgeError",0,100,0,0,"Tranfer file failed.")
+
+    if srcDir == 0:
+        beautyJudge(("Compile Error",0,100,0,0,"Class not found :("))
+        return ("Compile Error",0,100,0,0,"Class not found :(")
 
     if problemInfo.DoConvertDir(proLang,srcDir,problemDir) == False:
         beautyJudge(("JudgeError",0,100,0,0,"Can't convert data"))
@@ -121,8 +125,8 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     printAnnou("Compiling...")
     res,compileMessage = Compile.DoCompile(problemInfo.compiling[proLang],problemDir)
     if res == 2:
-        beautyJudge(("Compile Failed",0,100,0,0,"NOT COMPILE ERROR!"))
-        return ("Compile Failed",0,100,0,0,"NOT COMPILE ERROR!")
+        beautyJudge(("Compile Failed",0,100,0,0,"Maybe you have some mystery alphabet."))
+        return ("Compile Failed",0,100,0,0,"Maybe you have some mystery alphabet.")
     elif res == 1:
         beautyJudge(("Compile Error",0,100,0,0,compileMessage))
         return ("Compile Error",0,100,0,0,compileMessage)
