@@ -21,6 +21,7 @@ import time
 import signal
 
 judgeArgs = sys.argv[-1]
+
 if not path.exists(judgeArgs):
     print(f"!;0;1;0;0;Judge args not found :(",end = "")
     exit(0)
@@ -37,11 +38,15 @@ if(len(judgeArgs) < 9):
     print(f"!;0;1;0;0;Not Enough info to judge\nexpected 9 args got {len(judgeArgs)} args",end = "")
     exit(0)
 
+try:
 
-testCase = judgeArgs[0] or ""
-timeLimit = int(judgeArgs[1] or "")#In ms
-memoryLimit = int(judgeArgs[2] or "")#mb
-PROBLEM_DIR = judgeArgs[3] or ""
+    testCase = judgeArgs[0] or ""
+    timeLimit = int(judgeArgs[1] or "")#In ms
+    memoryLimit = int(judgeArgs[2] or "")#mb
+    PROBLEM_DIR = judgeArgs[3] or ""
+except:
+    print(f"!;0;1;0;0;Can't convert data :(",end = "")
+    exit(0)
 
 if(len(judgeArgs) < 6):
     print(f"!;0;1;0;0;Program not Found",end = "")
@@ -148,14 +153,60 @@ def compare():
     if not path.exists(path.join(PROBLEM_DIR,"grader_result.txt")):
         return "!","grader_result Not found"
     
-    otogVerdict = ""
+    resultVerdict = ""
     with open(path.join(PROBLEM_DIR,"grader_result.txt"),"r") as f:
-        otogVerdict = f.read()
+        resultVerdict = f.read().split("\n")
     
-    if otogVerdict != "P":
-        return "-","WrongAnswer"
+    if len(resultVerdict) == 1:
+        return "!",0,1,"grader Not respond :("
 
-    return otogVerdict,"Test ok Yey!"
+    if len(resultVerdict) == 1:
+        if resultVerdict[0] == "P":
+            return "P",1,1,"Test ok Yey!"
+        elif resultVerdict[0] == "W" or resultVerdict[0] == "-":
+            return "-",0,1,"Wrong Answer"
+        else:
+            return resultVerdict[0],0,1,"????"
+    
+    if len(resultVerdict) == 3:
+
+        tScore = 0
+        tMaxScore = 0
+        
+        try:
+            tScore = int(resultVerdict[1])
+            tMaxScore = int(resultVerdict[2])
+        except:
+            return "!",0,1,"Can't convert score to int"
+
+        if resultVerdict[0] == "P":
+            return "P",tScore,tMaxScore,"Test ok Yey!"
+        elif resultVerdict[0] == "H":
+            return "H",tScore,tMaxScore,"Partially correct"
+        elif resultVerdict[0] == "W" or resultVerdict[0] == "-":
+            return "-",tScore,tMaxScore,"Wrong Answer"
+        else:
+            return resultVerdict[0],tScore,tMaxScore,"????"
+    
+    if len(resultVerdict) == 4:
+
+        tScore = 0
+        tMaxScore = 0
+        commm = resultVerdict[3]
+        
+        try:
+            tScore = int(resultVerdict[1])
+            tMaxScore = int(resultVerdict[2])
+        except:
+            return "!",0,1,"Can't convert score to int"
+
+        if resultVerdict[0] == "W":
+            resultVerdict[0] = '-'
+
+        return resultVerdict[0],tScore,tMaxScore,commm
+
+
+    return "?",1,1,"WUT?"
 
     
 
@@ -172,9 +223,7 @@ def main():
     maxscore = 1.0
     if comment == "OK":
 
-        ver,comment = compare()
-        verdic = ver
-        score = 1.0 if ver == "P" else 0
+        verdic,score,maxscore,comment = compare()
 
     elif comment == "JUDGEER":
         verdic = "!"
