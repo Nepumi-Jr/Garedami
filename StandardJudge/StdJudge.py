@@ -157,7 +157,7 @@ def compare():
     with open(path.join(PROBLEM_DIR,"grader_result.txt"),"r") as f:
         resultVerdict = f.read().split("\n")
     
-    if len(resultVerdict) == 1:
+    if len(resultVerdict) == 0:
         return "!",0,1,"grader Not respond :("
 
     if len(resultVerdict) == 1:

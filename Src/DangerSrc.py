@@ -1,4 +1,3 @@
-from Garedami.StandardJudge.StdJudge import main
 from Garedami.Src import Config
 from Garedami.Src.Annouce import *
 

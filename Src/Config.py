@@ -25,7 +25,8 @@ DEFAULT_GRADER = {
     "MAX_TEST_CASE" : 200,
     "COMPILE_TIME" : 5000,
     "JUDGE_TIME" : 5000,
-    "MAX_DISPLAY" : 20
+    "MAX_DISPLAY" : 20,
+    "GLOBAL_TIME_FACTOR" : 1.0
 }
 
 DEFAULT_VERDICT = {
@@ -39,7 +40,7 @@ DEFAULT_VERDICT = {
     "?" : "Undefined"
 }
 
-DEFAULT_DANGER_WORDS = ["Popen","popen","os.","import os","from os", "import subprocess", "from subprocess"]
+DEFAULT_DANGER_WORDS = ["Popen","popen","os.","import os","from os", "import subprocess", "from subprocess", "import java.net"]
 
 
 
