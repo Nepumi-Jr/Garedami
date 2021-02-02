@@ -1,5 +1,10 @@
 """
-    Not very done yet!
+    Judge
+    ---------
+    To use it you must call judge()
+
+    for argument and output from this function
+    you can look at judge()
 """
 
 from Garedami.Src.Annouce import *
@@ -25,7 +30,7 @@ def beautyJudge(somejudge):
 
 def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,memJudge:int = 64) -> tuple():
     """
-    This is main function that use for judging user
+    This is *main* function that use for judging user
 
     Input
     ----------
@@ -78,6 +83,7 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     printLog("Checking source")
     danger = DangerSrc.IsDanger(src)
     if danger != False:
+        beautyJudge(("SrcError",0,100,0,0,f"Found Danger word {danger}"))
         return ("SrcError",0,100,0,0,f"Found Danger word {danger}")
 
 

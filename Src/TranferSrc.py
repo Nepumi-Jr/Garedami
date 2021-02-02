@@ -2,6 +2,7 @@
 
 from os import path
 import os,shutil
+from Garedami.Src.Annouce import *
 
 def GetJavaPublicClass(src:str):
     #public class <Name> {
@@ -101,7 +102,12 @@ def copytree(src, dst, symlinks=False, ignore=None):
 
 def CreateFromShadow(problemDir:str):
     if path.exists(path.join(problemDir,"Shadow")):
-        copytree(path.join(problemDir,"Shadow"),path.join(problemDir,"CompileSpace"))
+        try:
+            copytree(path.join(problemDir,"Shadow"),path.join(problemDir,"CompileSpace"))
+        except:
+            printWarning("Can't Copy from shadow :(")
+            if not path.exists(path.join(problemDir,"CompileSpace")):
+                os.mkdir(path.join(problemDir,"CompileSpace"))
     else:
         if not path.exists(path.join(problemDir,"CompileSpace")):
             os.mkdir(path.join(problemDir,"CompileSpace"))

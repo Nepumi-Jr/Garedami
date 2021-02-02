@@ -16,15 +16,18 @@ Garedami are from 2 words.
   - yaml
   - json
 
-To use it you have to call function Judge in [judge.py](https://github.com/Nepumi-Jr/Garademi/blob/main/Src/Judge.py) and require 4 arguments.
+To use it you have to call function Judge in [judge.py](https://github.com/Nepumi-Jr/Garademi/blob/main/Src/Judge.py) and require 4+2 arguments.
 - idTask (as str)
     ... self-explanatory but we don't use them much.
 - proLang (as str)
     is programming language that user what to compile
 - problemDir (as str)
     is Directory of that problem.
-- src (asstr)
+- src (as str)
     is source code that user want to judge
+- timeJudge (as int) (optional)
+- memJudge (as int) (optional)
+    is memory that use for during Judge (available for linux)
 
 ## how it's working
 After call by [judge.py](https://github.com/Nepumi-Jr/Garademi/blob/main/Src/Judge.py), it will do 4 main Process
