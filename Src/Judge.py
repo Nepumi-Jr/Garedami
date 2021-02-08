@@ -94,10 +94,10 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     if srcDir == False:
         beautyJudge(("JudgeError",0,100,0,0,"Tranfer file failed."))
         return ("JudgeError",0,100,0,0,"Tranfer file failed.")
-
-    if srcDir == 0:
+    elif srcDir == "Java Class Not Found :((":
         beautyJudge(("Compile Error",0,100,0,0,"Class not found :("))
         return ("Compile Error",0,100,0,0,"Class not found :(")
+        
 
     if problemInfo.DoConvertDir(proLang,srcDir,problemDir) == False:
         beautyJudge(("JudgeError",0,100,0,0,"Can't convert data"))

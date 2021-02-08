@@ -47,7 +47,7 @@ def CreateFileToCompileSpace(problemDir:str,lang:str,src:str):
     fileName = GetNameForSrc(lang,src)
 
     if fileName == False:
-        return False
+        return "Java Class Not Found :(("
     
     with open(path.join(problemDir,"CompileSpace",fileName),"w") as f:
         f.write(src)
