@@ -248,14 +248,32 @@ def getTimeFactor(lang:str):
         return 1
     return configLang[lang]["TIME_FACTOR"]
 
+def getMemFactor(lang:str):
+    global configLang
+    if not (lang in configLang):
+        return 1
+    return configLang[lang]["MEM_FACTOR"]
+
+def getGlobalTimeFactor():
+    global configGrader
+
+    if "GLOBAL_TIME_FACTOR" in configGrader:
+        return configGrader["GLOBAL_TIME_FACTOR"]
+
+    return 1
+
 
 def getDangerWord():
+    global configDangerWord
     return configDangerWord
 
 def getDangerWordByLang(lang:str):
+    global configLang
 
     if "DANGER_WORDS" in configLang[lang]:
         return configLang[lang]["DANGER_WORDS"]
     
     return []
+
+
     

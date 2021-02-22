@@ -141,9 +141,10 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     
     #Run
     printAnnou("Running...")
-    timeLimit = int(timeJudge * Config.getTimeFactor(proLang))
+    timeLimit = int(timeJudge * Config.getTimeFactor(proLang) * Config.getGlobalTimeFactor())
+    memLimit = int(memJudge * Config.getMemFactor(proLang))
 
-    res = Run.JudgeRun(problemInfo,proLang,srcDir,problemDir,timeLimit,memJudge)
+    res = Run.JudgeRun(problemInfo, proLang, srcDir, problemDir, timeLimit, memLimit)
 
     time.sleep(0.2)
 
