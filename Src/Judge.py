@@ -80,6 +80,11 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
         beautyJudge(("Compile Error?",0,100,0,0,f"{proLang} is not allowed"))
         return ("Compile Error?",0,100,0,0,f"{proLang} is not allowed")
     
+    if Config.IsLangExist(proLang) == False:
+        beautyJudge(("Judge Error",0,100,0,0,f"{proLang} config not found!!!"))
+        return ("Judge Error",0,100,0,0,f"{proLang} config not found!!!")
+
+
     printLog("Checking source")
     danger = DangerSrc.IsDanger(src, proLang)
     if danger != False:

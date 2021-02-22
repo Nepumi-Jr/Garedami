@@ -213,6 +213,8 @@ def Verdict(vv:str)->str:
         vv = "?"
     return configVerdict[vv]
 
+def IsLangExist(lang:str):
+    return (lang in configLang)
     
 def GetBinPath(lang:str):
     global configLang
