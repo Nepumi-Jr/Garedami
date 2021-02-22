@@ -14,11 +14,13 @@ CUR_DIR = path.dirname(__file__)
 CONFIG_DIR = path.abspath(path.join(CUR_DIR,"..","Config"))
 CONFIG_DIR_LANG = path.join(CONFIG_DIR,"Langs")
 
+DEFAULT_ALL_LANG = {"BIN_PATH" : "", "BIN_FILE" : "", "TIME_FACTOR":1.0, "MEM_FACTOR":1.0 , "DANGER_WORDS" : []}
+
 DEFAULT_LANG = {
-    "C" : {"BIN_PATH" : "", "BIN_FILE" : "gcc","TIME_FACTOR":1.0},
-    "Cpp" : {"BIN_PATH" : "", "BIN_FILE" : "g++","TIME_FACTOR":1.0},
-    "Python" : {"BIN_PATH" : "", "BIN_FILE" : "python","TIME_FACTOR":5.0},
-    "Java" : {"BIN_PATH" : "", "BIN_FILE" : "java","TIME_FACTOR":1.5}
+    "C" : {"BIN_PATH" : "", "BIN_FILE" : "gcc","TIME_FACTOR":1.0, "MEM_FACTOR":1.0, "DANGER_WORDS" : []},
+    "Cpp" : {"BIN_PATH" : "", "BIN_FILE" : "g++","TIME_FACTOR":1.0, "MEM_FACTOR":1.0, "DANGER_WORDS" : []},
+    "Python" : {"BIN_PATH" : "", "BIN_FILE" : "python","TIME_FACTOR":5.0, "MEM_FACTOR":1.0, "DANGER_WORDS" : ["import os","from os", "import subprocess", "from subprocess"]},
+    "Java" : {"BIN_PATH" : "", "BIN_FILE" : "java","TIME_FACTOR":1.5, "MEM_FACTOR":1.0, "DANGER_WORDS" : ["import java.net"]}
 }
 
 DEFAULT_GRADER = {
@@ -40,7 +42,7 @@ DEFAULT_VERDICT = {
     "?" : "Undefined"
 }
 
-DEFAULT_DANGER_WORDS = ["Popen","popen","os.","import os","from os", "import subprocess", "from subprocess", "import java.net"]
+DEFAULT_DANGER_WORDS = ["Popen","popen"]
 
 
 
@@ -123,24 +125,34 @@ def GetYamlData(dir:str):
     return data
 
 
-def GetLangData(lang:str):
+def GetLangData(langFile:str):
 
-    data = GetYamlData(path.join(CONFIG_DIR_LANG, lang))
+    lang = langFile.replace(".yaml","")
 
-    if type(data) != dict:
-        return data
-    
-    
-    require = [("BIN_FILE",""),("BIN_PATH",""),("TIME_FACTOR",1.0)]
+    if lang in DEFAULT_LANG:
+        res = DEFAULT_LANG[lang].copy()
+    else:
+        res = DEFAULT_ALL_LANG.copy()
 
-    for r in require:
-        if not (r[0] in data):
-            return f"{r[0]} not found in data."
-        
-        if type(data[r[0]]) != type(r[1]):
-            return f"data in {r[0]} is not useable."
+    try:
+        data = GetYamlData(path.join(CONFIG_DIR_LANG, langFile))
+    except:
+        printWarning(f"LANG {lang} Can't read data :(")
+        return res
+
+    if type(data) != type(dict()):
+        printWarning(f"LANG {lang} not useable :(")
+        return res
+
+    for r in res:
+        if not (r in data):
+            printWarning(f"LANG {lang} : {r} not found in data.")
+        elif type(data[r]) != type(res[r]):
+            printWarning(f"LANG {lang} : data in {r} is not useable.")
+        else:
+            res[r] = data[r]
     
-    return data
+    return res
 
 def ReloadConfig():
 
@@ -154,13 +166,15 @@ def ReloadConfig():
 
     langs = [f for f in os.listdir(CONFIG_DIR_LANG) if path.isfile(path.join(CONFIG_DIR_LANG, f)) and f.endswith(".yaml")]
     
-    for lang in langs:
-        res = GetLangData(lang)
+    for langFile in langs:
+        res = GetLangData(langFile)
+        configLang[langFile.replace(".yaml","")] = res
 
-        if type(res) == str:
-            printWarning(f"Config {lang} Error [{res}]")
-        else:
-            configLang[lang.replace(".yaml","")] = res
+        try:
+            with open(path.join(CONFIG_DIR_LANG,langFile),"w") as f:
+                f.write(yaml.dump(res))
+        except:
+            printWarning(f"Can't save config {langFile}")
     
 
     configGrader = GetYamlData(path.join(CONFIG_DIR,"Grader.yaml"))
@@ -237,4 +251,11 @@ def getTimeFactor(lang:str):
 
 def getDangerWord():
     return configDangerWord
+
+def getDangerWordByLang(lang:str):
+
+    if "DANGER_WORDS" in configLang[lang]:
+        return configLang[lang]["DANGER_WORDS"]
+    
+    return []
     

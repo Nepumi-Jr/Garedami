@@ -130,11 +130,3 @@ SomeProblem/
 >It's not different from Basic Problem
 
 But you can custom in `Config.yaml` and `Custom_Judge`
-
-## TODO
-- Test in Linux os
-- Supporting a custom compare in Otog.org
-- Error Handling
-- more Path access
-
-- or maybe more.

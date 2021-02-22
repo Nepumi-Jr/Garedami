@@ -81,10 +81,10 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
         return ("Compile Error?",0,100,0,0,f"{proLang} is not allowed")
     
     printLog("Checking source")
-    danger = DangerSrc.IsDanger(src)
+    danger = DangerSrc.IsDanger(src, proLang)
     if danger != False:
-        beautyJudge(("SrcError",0,100,0,0,f"Found Danger word {danger}"))
-        return ("SrcError",0,100,0,0,f"Found Danger word {danger}")
+        beautyJudge(("SrcError",0,100,0,0,f"Found Danger word '{danger}'"))
+        return ("SrcError",0,100,0,0,f"Found Danger word '{danger}'")
 
 
     TranferSrc.CreateFromShadow(problemDir)

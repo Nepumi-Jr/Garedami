@@ -108,14 +108,15 @@ def CheckBySuffixArray(srcStr:str,words:list):
     return False
 
 
-
-def IsDanger(srcStr:str):
+def IsDanger(srcStr:str, srcLang:str):
 
     danger = Config.getDangerWord()
-
-
     res = CheckBySuffixArray(srcStr,danger)
+    if res != False:
+        printError(f"Found Danger word!{res}")
 
+    dangerLang = Config.getDangerWordByLang(srcLang)
+    res = CheckBySuffixArray(srcStr,dangerLang)
     if res != False:
         printError(f"Found Danger word!{res}")
     
