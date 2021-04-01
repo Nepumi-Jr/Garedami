@@ -105,9 +105,6 @@ def JudgeRun(problemInfo:Problem,proLang:str,srcPath:str,problemDir:str,timeLimi
             
 
             if chunk[0].upper() == "E" :
-                if cfVerdict == "Accept":
-                    cfVerdict = Config.Verdict(chunk[0].upper())
-                    comment = chunk[5]
                 
                 try:
                     os.remove(judgeArgsFile)
