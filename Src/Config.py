@@ -296,7 +296,7 @@ def getDangerWordByLang(lang:str):
     
     return []
 
-def getCensorWords(lang:str):
+def getCensorWords():
     global configCensorWord
     return configCensorWord
 
