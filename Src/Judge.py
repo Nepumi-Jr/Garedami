@@ -158,8 +158,8 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
     except:
         printWarning("Can't Delete Src and Bin")
 
-    res[5] = Censor.beep(res[5],Config.getCensorWords())
+    cen = Censor.beep(res[5],Config.getCensorWords())
 
     beautyJudge(res)
 
-    return res
+    return (res[0],res[1],res[2],res[3],res[4],cen)
