@@ -10,7 +10,7 @@
 from Garedami.Src.Annouce import *
 import json, os, time
 from Garedami.Src.Problem import Problem
-from Garedami.Src import TranferSrc, Config, Compile, Run, DangerSrc
+from Garedami.Src import TranferSrc, Config, Compile, Run, DangerSrc, Censor
 
 CUR_DIR = os.path.dirname(__file__)
 
@@ -157,6 +157,8 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
         TranferSrc.DelFileInCompileSpace(problemDir,proLang,src)
     except:
         printWarning("Can't Delete Src and Bin")
+
+    res[5] = Censor.beep(res[5],Config.getCensorWords())
 
     beautyJudge(res)
 

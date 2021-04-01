@@ -44,13 +44,14 @@ DEFAULT_VERDICT = {
 
 DEFAULT_DANGER_WORDS = ["Popen","popen"]
 
-
+DEFAULT_CENSOR_WORD = ["Bruh"]#Just Example Don't mind that. 
 
 
 configLang = dict()
 configGrader = dict()
 configVerdict = dict()
 configDangerWord = []
+configCensorWord = []
 
 def init():
     #Creating important lang config if they don't exits
@@ -102,7 +103,17 @@ def init():
                 print("Created")
         except:
             print("\aError")
-
+        
+    
+    #Censor word
+    if not path.exists(path.join(CONFIG_DIR,"Censors.yaml")):
+        print("Censor word config not found...",end="")
+        try:
+            with open(path.join(CONFIG_DIR,"Censors.yaml"),"w") as f:
+                f.write(yaml.dump(DEFAULT_CENSOR_WORD))
+                print("Created")
+        except:
+            print("\aError")
     
     ReloadConfig()
 
@@ -160,6 +171,7 @@ def ReloadConfig():
     global configGrader
     global configVerdict
     global configDangerWord
+    global configCensorWord
 
 
     configLang = dict()
@@ -204,8 +216,15 @@ def ReloadConfig():
     if type(configDangerWord) != list:
         printWarning(f"Config Danger word Error {configDangerWord}")
         configDangerWord = DEFAULT_DANGER_WORDS.copy()
+
+
+    configCensorWord = GetYamlData(path.join(CONFIG_DIR,"Censors.yaml"))
+
+    if type(configDangerWord) != list:
+        printWarning(f"Config Danger word Error {configDangerWord}")
+        configCensorWord = DEFAULT_DANGER_WORDS.copy()
     
-        
+    
 
 def Verdict(vv:str)->str:
     vv = vv.upper()
@@ -276,6 +295,10 @@ def getDangerWordByLang(lang:str):
         return configLang[lang]["DANGER_WORDS"]
     
     return []
+
+def getCensorWords(lang:str):
+    global configCensorWord
+    return configCensorWord
 
 
     
