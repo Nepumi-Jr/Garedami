@@ -58,7 +58,7 @@ def JudgeRun(problemInfo:Problem,proLang:str,srcPath:str,problemDir:str,timeLimi
     cfVerdict = "Accept"
     score = 0
     maxScore = 0
-    comment = "Accept"
+    comment = ""
     time = 0
     memory = 0
 
@@ -120,9 +120,10 @@ def JudgeRun(problemInfo:Problem,proLang:str,srcPath:str,problemDir:str,timeLimi
                 otogVerdict += "P"
             else:
                 otogVerdict += chunk[0].upper()
+                comment += f"Case {testCase} : {chunk[5]}\n"
                 if cfVerdict == "Accept":
                     cfVerdict = Config.Verdict(chunk[0].upper())
-                    comment = chunk[5]
+                    
             
 
             score += IsFloat(chunk[1])
