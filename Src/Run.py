@@ -120,7 +120,7 @@ def JudgeRun(problemInfo:Problem,proLang:str,srcPath:str,problemDir:str,timeLimi
                 otogVerdict += "P"
             else:
                 otogVerdict += chunk[0].upper()
-                comment += f"Case {testCase} : {chunk[5]}\n"
+                comment += f"Case {testCase + 1} : {chunk[5]}\n"
                 if cfVerdict == "Accept":
                     cfVerdict = Config.Verdict(chunk[0].upper())
                     
