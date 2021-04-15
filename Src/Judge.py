@@ -159,6 +159,11 @@ def judge(idTask:int,proLang:str,problemDir:str,src:str,timeJudge:int = 1000,mem
         printWarning("Can't Delete Src and Bin")
 
     cen = Censor.beep(res[5],Config.getCensorWords())
+    
+    if res[0] == "":
+        printWarning("No test case...")
+        beautyJudge(("No test-case...",res[1],1,res[3],res[4],":("))
+        return ("No test-case...",res[1],1,res[3],res[4],":(")
 
     beautyJudge(res)
 
