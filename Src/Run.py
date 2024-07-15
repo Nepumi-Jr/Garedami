@@ -90,13 +90,14 @@ def JudgeRun(problemInfo: Problem, proLang: str, srcPath: str, problemDir: str, 
             sleep(0.09)
 
             # ? check testcase and remove \r if exist
-            inPath = path.join(problemDir, f"{testCase + 1}.in")
-            with open(inPath, "r") as f:
-                inContent = f.read()
+            if path.exists(path.join(problemDir, f"{testCase + 1}.in")):
+                inPath = path.join(problemDir, f"{testCase + 1}.in")
+                with open(inPath, "r") as f:
+                    inContent = f.read()
 
-            inContent = inContent.replace("\r", "")
-            with open(inPath, "w") as f:
-                f.write(inContent)
+                inContent = inContent.replace("\r", "")
+                with open(inPath, "w") as f:
+                    f.write(inContent)
 
             p = Popen(f"""{problemInfo.judgingRun.main} {problemInfo.judgingRun.args} "{judgeArgsFile}" """,
                       stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
